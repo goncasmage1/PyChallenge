@@ -26,6 +26,11 @@ clock = pygame.time.Clock()
 
 is_god = False
 
+intro = True
+selecting = True
+GG = False
+side_shooting = False
+
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC"]
 

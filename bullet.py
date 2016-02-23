@@ -7,6 +7,7 @@ class bullet(pygame.sprite.Sprite):
     def __init__(self, x, dir):
         super().__init__()
         self.x = x
+        self.x = x + 25
         self.y = display_height-60
         self.w = 5
         self.h = 5
@@ -16,6 +17,7 @@ class bullet(pygame.sprite.Sprite):
         if dir == 2:
             self.image = pygame.image.load("Imagens/bullet_mid.png")
             self.rect = self.image.get_rect(center = (self.x+self.w,self.y-60))
+            self.rect = self.image.get_rect(center = (self.x+self.w*2,self.y-60))
             self.image.set_colorkey(self.backgroundColor) # pixels in obstacle with this color are transparent in the background
             self.move_pos = ((0, -10))
         #esquerda
