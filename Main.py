@@ -72,21 +72,20 @@ def button(msg,x,y,w,h,ic,ac,size,action,mode):
 
     #se a funcao receber o ultimo argumento
     if mode != 0:
-        if x + w > mouse[0] > x and y + h > mouse[1] > y:
+    	if x + w > mouse[0] > x and y + h > mouse[1] > y:
             pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
             if click[0] == 1 and action != None:
                 action(mode)
-        else:
-            pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
+		else:
+        	pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
     #se a funcao nao receber o ultimo argumento
     else:
-        if x + w > mouse[0] > x and y + h > mouse[1] > y:
-            pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
-            if click[0] == 1 and action != None:
-                action()
-
-        else:
+    	if x + w > mouse[0] > x and y + h > mouse[1] > y:
+    		pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
+    		if click[0] == 1 and action != None:
+    			action()
+    	else:
             pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
     screen_text_center(msg, x + w/2, y + h/2, size)
@@ -124,8 +123,6 @@ def game_intro():
 	    clock.tick(15)
 
 def select_mode():
-	global intro
-	intro = False
 
 	while selecting:
 	    for event in pygame.event.get():
@@ -140,9 +137,11 @@ def select_mode():
 
 	    #mostra os botoes
 	    if selecting:
-	    	button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
+	    	button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, 0)
+
 	    if selecting:
-	    	button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
+	    	button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
+
 	    #if selecting:
 	    #	button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
 
@@ -151,8 +150,9 @@ def select_mode():
 
 
 def game_loop():
-    global is_god, intro, selecting, GG, side_shooting, score
+    global is_god, intro, selecting, GG, side_shooting, score, intro
 
+    intro = False
     selecting = False
     pos_change = 0
     bullets = []
@@ -239,17 +239,31 @@ def game_loop():
         			score += 20
         			obstacleGroup.remove(obstaculo)
         		else:
-        			GG = True
+        			if user.is_dead():
+        				user.update_hp(3)
+        				GG = True
+        				break
+        			else:
+        				user.update_hp(-1)
 
         	if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
         		if obstaculo.dif() == 0:
-        			score += 5
+        			if is_god:
+        				score += 40
+        			else:
+        				score += 5
         			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
         		elif obstaculo.dif() == 1:
-        			score += 10
+        			if is_god:
+        				score += 80
+        			else:
+        				score += 10
         			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
         		elif obstaculo.dif() == 2:
-        			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
+        			if is_god:
+        				score += 150
+        			else:
+        				pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
 
         	if obstaculo.pos()[1] > display_height + (obstaculo.height()):
         		if obstaculo.dif() == 0:
@@ -261,8 +275,6 @@ def game_loop():
         		obstacleGroup.remove(obstaculo)
 
        	#health_bar(aluno.hp)
-        if len(aluno) == 0:
-        	GG = True
 
         #update
         bulletSprites.update()

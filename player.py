@@ -10,7 +10,7 @@ class player(pygame.sprite.Sprite):
         self.y = display_height - 40
         self.w = 40
         self.h = 40
-        self.health = 100
+        self.health = 3
         self.speed = 4
         self.image = pygame.image.load("Imagens/player.png")
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
@@ -42,5 +42,8 @@ class player(pygame.sprite.Sprite):
         else:
             self.rect.x += value*self.speed
 
-    def hp(self):
-        return self.health
+    def is_dead(self):
+        return (self.health == 0)
+
+    def update_hp(self, value):
+        self.health += value
