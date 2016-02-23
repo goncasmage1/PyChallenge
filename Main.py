@@ -114,12 +114,14 @@ def game_intro():
 
 	    #mostra o texto de introducao
 	    screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
-	    button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
-	    button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
 
 	    if intro:
-	        pygame.display.update()
-	        clock.tick(15)
+	    	button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
+	    if intro:
+	    	button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+
+	    pygame.display.update()
+	    clock.tick(15)
 
 def select_mode():
 	global intro
@@ -137,9 +139,12 @@ def select_mode():
 	    screen_text_center("Modo de jogo", display_width/2, display_height/8, 50)
 
 	    #mostra os botoes
-	    button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
-	    button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
-	    #button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
+	    if selecting:
+	    	button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
+	    if selecting:
+	    	button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
+	    #if selecting:
+	    #	button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
 
 	    pygame.display.update()
 	    clock.tick(15)
