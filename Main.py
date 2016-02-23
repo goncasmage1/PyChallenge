@@ -151,7 +151,7 @@ def select_mode():
 
 
 def game_loop():
-    global is_god, intro, selecting, GG, side_shooting
+    global is_god, intro, selecting, GG, side_shooting, score
 
     selecting = False
     pos_change = 0
@@ -230,46 +230,65 @@ def game_loop():
         aluno.draw(gameDisplay)
         aluno.update(pos_change)
 
-        #colisoes entre as sprites
-        if is_god:
-        	pygame.sprite.groupcollide(aluno, obstacleGroup, False, True)
-        else:
-        	pygame.sprite.groupcollide(aluno, obstacleGroup, True, False)
-
-       	pygame.sprite.groupcollide(bulletSprites, obstacleGroup, True, True)
-
+        #detecao de colisoes
         for obstaculo in obstacleGroup:
+        	user = (aluno.sprites())[0]
+
+        	if pygame.sprite.collide_rect(user, obstaculo):
+        		if is_god:
+        			score += 20
+        			obstacleGroup.remove(obstaculo)
+        		else:
+        			GG = True
+
+        	if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
+        		if obstaculo.dif() == 0:
+        			score += 5
+        			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+        		elif obstaculo.dif() == 1:
+        			score += 10
+        			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+        		elif obstaculo.dif() == 1:
+        			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
+
         	if obstaculo.pos()[1] > display_height + (obstaculo.height()):
-        		obstacleGroup.remove(obstaculo)
+        		if obstaculo.dif() == 0:
+        			score += 1
+        		elif obstaculo.dif() == 1:
+	    			score += 2
+	    		elif obstaculo.dif() == 2:
+	    			score += 3
+	    		obstacleGroup.remove(obstaculo)
 
-        #health_bar(aluno.hp)
+	    #health_bar(aluno.hp)
 
-        if len(aluno) == 0:
-        	GG = True
+	    if len(aluno) == 0:
+	    	GG = True
 
-        #update
-        bulletSprites.update()
-        bulletSprites.draw(gameDisplay)
-        obstacleGroup.update()
-        clock.tick(60)
+	    #update
+	    bulletSprites.update()
+	    bulletSprites.draw(gameDisplay)
+	    obstacleGroup.update()
+	    clock.tick(60)
 
 
 def crash():
+	global score
+	screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
+	screen_text_center("score: " + str(score), display_width/2, display_height/2, 40)
 
-    screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
+	while GG:
+	    for event in pygame.event.get():
+	        if event.type == pygame.QUIT:
+	            pygame.quit()
+	            quit()
+	            
+	    if GG:
+	    	button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,0)
+	    if GG:
+	    	button("Sair",550,450,100,50,red,bright_red,20,quitgame,0)
 
-    while GG:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-                
-        if GG:
-        	button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,0)
-        if GG:
-        	button("Sair",550,450,100,50,red,bright_red,20,quitgame,0)
-
-        if GG:
+	    if GG:
 	        pygame.display.update()
 	        clock.tick(15)
 

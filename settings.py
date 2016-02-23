@@ -31,6 +31,8 @@ selecting = True
 GG = False
 side_shooting = False
 
+score = 0
+
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC"]
 
