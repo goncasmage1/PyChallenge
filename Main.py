@@ -248,28 +248,27 @@ def game_loop():
         		elif obstaculo.dif() == 1:
         			score += 10
         			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
-        		elif obstaculo.dif() == 1:
+        		elif obstaculo.dif() == 2:
         			pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
 
         	if obstaculo.pos()[1] > display_height + (obstaculo.height()):
         		if obstaculo.dif() == 0:
         			score += 1
         		elif obstaculo.dif() == 1:
-	    			score += 2
-	    		elif obstaculo.dif() == 2:
-	    			score += 3
-	    		obstacleGroup.remove(obstaculo)
+        			score += 2
+        		elif obstaculo.dif() == 2:
+        			score += 3
+        		obstacleGroup.remove(obstaculo)
 
-	    #health_bar(aluno.hp)
+       	#health_bar(aluno.hp)
+        if len(aluno) == 0:
+        	GG = True
 
-	    if len(aluno) == 0:
-	    	GG = True
-
-	    #update
-	    bulletSprites.update()
-	    bulletSprites.draw(gameDisplay)
-	    obstacleGroup.update()
-	    clock.tick(60)
+        #update
+        bulletSprites.update()
+        bulletSprites.draw(gameDisplay)
+        obstacleGroup.update()
+        clock.tick(60)
 
 
 def crash():
