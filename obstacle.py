@@ -60,4 +60,4 @@ class obstacle(pygame.sprite.Sprite):
         self.rect.y += self.speed
 
     def __del__(self):
-        print(self.name + " foi-se")        pass
+        print(self.name + " foi-se")        pass        pass
