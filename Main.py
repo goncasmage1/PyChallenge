@@ -4,6 +4,7 @@ from player import *
 from obstacle import *
 from bullet import *
 from settings import *
+from inputbox import *
 
 
 """
@@ -70,10 +71,9 @@ def screen_text_center(text,x,y,size):
 	text_rect.center = (x,y)
 	gameDisplay.blit(text_surface,text_rect)
 
-
 #desenha um botao com uma acao associada
 def button(msg,x,y,w,h,ic,ac,size,action,mode):
-	global GG
+
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
 
@@ -92,6 +92,7 @@ def button(msg,x,y,w,h,ic,ac,size,action,mode):
 			pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
 			if click[0] == 1 and action != None:
 				action()
+
 		else:
 			pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
@@ -125,9 +126,14 @@ def game_intro():
 			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
 		if intro:
 			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
-
+			
+		table = open('highscore.txt','r')
+		s = table.readline()
+		screen_text_center('Highscore: ' + s +' points' , 400, 570, 25)
+		table.close
 		pygame.display.update()
 		clock.tick(15)
+	   
 
 def select_mode():
 
@@ -155,6 +161,22 @@ def select_mode():
 		pygame.display.update()
 		clock.tick(15)
 
+
+def deathscreen():
+	while True:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+		gameDisplay.fill(Red)
+		screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
+		fich = open('highscore.txt','w')
+		name = ask(gameDisplay, "Name")
+		fich.write(name + str(score))
+
+
+		pygame.display.update()
+		clock.tick(15)
 
 def game_loop():
 	global is_god, intro, selecting, GG, side_shooting, score, intro
