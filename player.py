@@ -28,7 +28,19 @@ class player(pygame.sprite.Sprite):
         return self.h
 
     def update(self, value):
-        self.rect.x += value*self.speed
+        if self.rect.x < 0:
+            if value < 0:
+                pass
+            else:
+                self.rect.x += value*self.speed
+
+        elif self.rect.x > display_width - (self.w)*2+8:
+            if value > 0:
+                pass
+            else:
+                self.rect.x += value*self.speed
+        else:
+            self.rect.x += value*self.speed
 
     def hp(self):
         return self.health

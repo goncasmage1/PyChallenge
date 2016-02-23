@@ -26,11 +26,17 @@ def quitgame():
     pygame.quit()
     quit()
 
+def retry():
+	global GG
+	GG = False
+	game_loop()
+
 
 #comeca o jogo em god mode
 def god_mode():
-    global is_god
+    global is_god, side_shooting
     is_god = True
+    side_shooting = True
     game_loop()
 
 
@@ -96,64 +102,65 @@ def health_bar(vida):
 
 #FUNCOES DE JOGO
 def game_intro():
+	global intro
 
-    intro = True
-    while intro:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+	while intro:
+	    for event in pygame.event.get():
+	        if event.type == pygame.QUIT:
+	            pygame.quit()
+	            quit()
 
-        gameDisplay.fill(white)
+	    gameDisplay.fill(white)
 
-        #mostra o texto de introducao
-        screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
-        button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
-        button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+	    #mostra o texto de introducao
+	    screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
+	    if intro:
+	    	button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
+	    if intro:
+	    	button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
 
-        if intro:
-            pygame.display.update()
-            clock.tick(15)
+	    if intro:
+	        pygame.display.update()
+	        clock.tick(15)
 
 def select_mode():
+	global intro
+	intro = False
 
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+	while selecting:
+	    for event in pygame.event.get():
+	        if event.type == pygame.QUIT:
+	            pygame.quit()
+	            quit()
 
-        gameDisplay.fill(white)
+	    gameDisplay.fill(white)
 
-        #mostra o texto de introducao
-        screen_text_center("Modo de jogo", display_width/2, display_height/8, 50)
+	    #mostra o texto de introducao
+	    screen_text_center("Modo de jogo", display_width/2, display_height/8, 50)
 
-        #mostra os botoes
-        #button("Normal", display_width/2 - 90, 220, 180, 50, green, bright_green, 30, game_loop, 0)
-        button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
-        button("God Mode", display_width/2 - 90, 250, 180, 50, red, bright_red, 30, game_loop, 0)
-        #button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
+	    #mostra os botoes
+	    if selecting:
+	    	button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
+	    if selecting:
+	    	button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
+	    	#button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
 
-        pygame.display.update()
-        clock.tick(15)
+	    if selecting:
+		    pygame.display.update()
+		    clock.tick(15)
 
 
 def game_loop():
 
-    global is_god
+    global is_god, intro, selecting, GG, side_shooting
 
-    #lol gg
-
-    intro = False
-    GG = False
+    selecting = False
     pos_change = 0
     bullets = []
     bulletSprites =pygame.sprite.Group()
 
     aluno = pygame.sprite.GroupSingle(player())
     obstacleGroup = pygame.sprite.Group()
-
-    side_shooting = False
     
     cadeira = [obstacle(random.choice(cadeiras_ref))]
     obstacleGroup.add(cadeira)
@@ -170,6 +177,12 @@ def game_loop():
     while not GG:
         pygame.display.update()
 
+
+        #obtem a posicao do aluno
+        for i in aluno:
+        	aluno_pos = i.pos()
+
+        #EVENTOS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -191,15 +204,15 @@ def game_loop():
 
                 #move as balas
                 if event.key == pygame.K_UP:
-                    bulletA = [bullet(aluno.pos()[0], 2)]
+                    bulletA = [bullet(aluno_pos[0], 2)]
                     bullets+=bulletA
                     bulletSprites.add(bulletA[0])
                 if event.key == pygame.K_LEFT and side_shooting:
-                    bulletA = [bullet(aluno.pos()[0]-14, 1)]
+                    bulletA = [bullet(aluno_pos[0]-14, 1)]
                     bullets+=bulletA
                     bulletSprites.add(bulletA[0])
                 if event.key == pygame.K_RIGHT and side_shooting:
-                    bulletA = [bullet(aluno.pos()[0]+10, 3)]
+                    bulletA = [bullet(aluno_pos[0]+10, 3)]
                     bullets+=bulletA
                     bulletSprites.add(bulletA[0])
 
@@ -214,7 +227,7 @@ def game_loop():
         obstacleGroup.draw(gameDisplay)
         obstacleGroup.update()
 
-        aluno.draw()
+        aluno.draw(gameDisplay)
         aluno.update(pos_change)
 
         #colisoes entre as sprites
@@ -231,6 +244,9 @@ def game_loop():
 
         #health_bar(aluno.hp)
 
+        if len(aluno) == 0:
+        	GG = True
+
         #update
         bulletSprites.update()
         bulletSprites.draw(gameDisplay)
@@ -242,19 +258,20 @@ def crash():
 
     screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
 
-    while True:
+    while GG:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        button("Tentar novamente",150,450,150,50,green,bright_green,20,game_loop,set_difficulty)
-        button("Menu",350,600,100,50,orange,bright_orange,30,game_intro,0)
-        button("Sair",550,450,100,50,red,bright_red,20,quitgame,0)
+        if GG:
+        	button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,0)
+        if GG:
+        	button("Sair",550,450,100,50,red,bright_red,20,quitgame,0)
 
-
-        pygame.display.update()
-        clock.tick(15)
+        if GG:
+	        pygame.display.update()
+	        clock.tick(15)
 
 
 game_intro()
