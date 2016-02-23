@@ -47,3 +47,6 @@ class player(pygame.sprite.Sprite):
 
     def update_hp(self, value):
         self.health += value
+
+    def hp(self):
+        return self.health
