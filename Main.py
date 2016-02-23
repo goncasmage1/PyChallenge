@@ -114,10 +114,8 @@ def game_intro():
 
 	    #mostra o texto de introducao
 	    screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
-	    if intro:
-	    	button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
-	    if intro:
-	    	button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+	    button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
+	    button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
 
 	    if intro:
 	        pygame.display.update()
@@ -139,19 +137,15 @@ def select_mode():
 	    screen_text_center("Modo de jogo", display_width/2, display_height/8, 50)
 
 	    #mostra os botoes
-	    if selecting:
-	    	button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
-	    if selecting:
-	    	button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
-	    	#button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
+	    button("God Mode", display_width/2 - 90, 400, 180, 50, red, bright_red, 30, god_mode, 0)
+	    button("God Mode", display_width/2 - 90, 250, 180, 50, green, bright_green, 30, game_loop, 0)
+	    #button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
 
-	    if selecting:
-		    pygame.display.update()
-		    clock.tick(15)
+	    pygame.display.update()
+	    clock.tick(15)
 
 
 def game_loop():
-
     global is_god, intro, selecting, GG, side_shooting
 
     selecting = False
@@ -224,6 +218,7 @@ def game_loop():
                     pos_change -= 1
 
         gameDisplay.fill(white)
+
         obstacleGroup.draw(gameDisplay)
         obstacleGroup.update()
 
@@ -263,7 +258,7 @@ def crash():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
+                
         if GG:
         	button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,0)
         if GG:

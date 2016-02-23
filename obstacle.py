@@ -19,6 +19,7 @@ class obstacle(pygame.sprite.Sprite):
         elif self.difficulty == 2:
             self.w, self.h = 80, 80
             self.color = red
+
         self.x = random.randint(0 + self.w, display_width-self.w)
         self.y = 0-self.h + 5
         self.surface = pygame.Surface((self.w, self.h))

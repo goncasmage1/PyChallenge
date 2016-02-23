@@ -6,6 +6,7 @@ from settings import *
 class bullet(pygame.sprite.Sprite):
     def __init__(self, x, dir):
         super().__init__()
+
         self.x = x + 25
         self.y = display_height-60
         self.w = 5
