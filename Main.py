@@ -19,22 +19,23 @@ def quitgame():
 
 #permite o jogador tentar outra vez
 def retry():
-	global intro, selecting, colliding, collide_change, pos_change, GG, score, bullets, bulletSprites, aluno, obstacleGroup, cadeira
+	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed, time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira
 
 	intro = False
 	selecting = False
 	colliding = False
 	collide_change = False
-	pos_change = 0
 	GG = False
 	score = 0
+	obstacle_speed = 3
+	time_change = 0
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 
 	user.reset()
 	obstacleGroup.empty()
 	
-	cadeira = [obstacle(random.choice(cadeiras_ref))]
+	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
 	obstacleGroup.add(cadeira)
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
@@ -203,7 +204,7 @@ def deathscreen():
 		clock.tick(15)
 
 def game_loop():
-	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user, bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting
+	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user, bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting, obstacle_speed, time_change, pos_change
 
 	intro = False
 	selecting = False
@@ -213,13 +214,16 @@ def game_loop():
 	shooting = True
 	shoot_time = 800
 	color_change = black
+	obstacle_speed = 3
+	speed_change = 0.05
+	time_change = 0
 	
 	aluno = pygame.sprite.GroupSingle(player())
 	user = (aluno.sprites())[0]
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 	obstacleGroup = pygame.sprite.Group()
-	cadeira = [obstacle(random.choice(cadeiras_ref))]
+	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
 	obstacleGroup.add(cadeira)
 
 	#desenhar o jogador e esperar 1 segundo
@@ -229,7 +233,7 @@ def game_loop():
 	#pygame.display.update()
 	#pygame.time.wait(1000)
 
-	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
+	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 + time_change, 1500 + time_change))
 
 	while True:
 
@@ -247,7 +251,7 @@ def game_loop():
 
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
-				cadeira = [obstacle(random.choice(cadeiras_ref))]
+				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
 				obstacleGroup.add(cadeira)
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
@@ -348,20 +352,31 @@ def game_loop():
 					else:
 						score += 2
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+					obstacle_speed += speed_change
+					time_change += 25
+
 				elif obstaculo.dif() == 1:
 					if is_god:
 						score += 80
 					else:
 						score += 10
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+					obstacle_speed += speed_change
+					time_change += 25
+
 				elif obstaculo.dif() == 2:
 					if is_god:
 						score += 150
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					else:
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
+					obstacle_speed += speed_change
+					time_change += 25
 
+			#quando o jogador ultrapassa um obstaculo
 			if obstaculo.pos()[1] > display_height + (obstaculo.height()):
+				obstacle_speed += speed_change
+
 				if obstaculo.dif() == 0:
 					score += 1
 				elif obstaculo.dif() == 1:
@@ -370,18 +385,20 @@ def game_loop():
 					score += 3
 				obstacleGroup.remove(obstaculo)
 
+		#quando o jogador e atingido por um obstaculo
 		if colliding and not collide_change:
 			collide_change = True
 			user.update_hp(-1)
 			pygame.time.set_timer(USEREVENT + 3, 500)
 			color_change = bright_red
 
-
+		#mecanismo de tranca
 		elif not colliding and collide_change:
 			collide_change = False
 
 		colliding = False
 
+		#se o jogador perde
 		if GG:
 			crash()
 
@@ -395,7 +412,7 @@ def game_loop():
 def crash():
 	global score, GG, ultima_cadeira
 	screen_text_center(ultima_cadeira + " moeu-te o juizo!", display_width/2, display_height/8+50, 70, black)
-	screen_text_center("score: " + str(score) + " ECT'S", display_width/2, display_height/3+40, 40, black)
+	screen_text_center("ECT'S: " + str(score), display_width/2, display_height/3+40, 40, black)
 
 	while GG:
 		for event in pygame.event.get():

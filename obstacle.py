@@ -4,7 +4,7 @@ import sys
 from settings import *
 
 class obstacle(pygame.sprite.Sprite):
-    def __init__(self, nome):
+    def __init__(self, nome, speed):
         super().__init__()
         self.name = nome
         for i in cadeiras_dict:
@@ -27,7 +27,7 @@ class obstacle(pygame.sprite.Sprite):
         self.image = self.surface
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
         print (self.rect.size)
-        self.speed = 3
+        self.speed = speed
 
     def dif(self):
         return self.difficulty
@@ -52,9 +52,6 @@ class obstacle(pygame.sprite.Sprite):
 
     def speed(self):
         return self.speed
-
-    def update_speed(self, value):
-        self.speed += value
 
     def update(self):
         self.rect.y += self.speed
