@@ -17,9 +17,32 @@ def quitgame():
 
 #permite o jogador tentar outra vez
 def retry():
-	global GG
+	global intro, selecting, colliding, collide_change, pos_change, GG, score, bullets, bulletSprites, aluno, obstacleGroup, cadeira
+
+	intro = False
+	selecting = False
+	colliding = False
+	collide_change = False
+	pos_change = 0
 	GG = False
-	game_loop()
+	score = 0
+	bullets = []
+	bulletSprites =pygame.sprite.Group()
+
+	aluno = pygame.sprite.GroupSingle(player())
+	obstacleGroup = pygame.sprite.Group()
+	
+	cadeira = [obstacle(random.choice(cadeiras_ref))]
+	obstacleGroup.add(cadeira)
+
+	#desenhar o jogador e esperar 1 segundo
+
+	#gameDisplay.fill(white)
+	#aluno.draw()
+	#pygame.display.update()
+	#pygame.time.wait(1000)
+
+	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
 
 def game_intro():
@@ -178,9 +201,11 @@ def game_loop():
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
-	while not GG:
-		pygame.display.update()
+	while True:
 
+		if GG:
+			crash()
+		pygame.display.update()
 
 		#obtem a posicao do aluno
 		for i in aluno:
@@ -322,6 +347,5 @@ def crash():
 
 
 game_intro()
-crash()
 pygame.quit()
 quit()
