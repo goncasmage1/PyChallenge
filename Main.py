@@ -73,10 +73,8 @@ def paused():
 				if event.key == pygame.K_p:
 						pause = False
 		
-		gameDisplay.fill(white)
-		
 		#mostra o texto de introducao
-		screen_text_center("Pausa",display_width/2,display_height/4,70)
+		screen_text_center("Pausa",display_width/2,display_height/4,70, black)
 		
 		button("Continuar",150,450,100,50,green,bright_green,20,unpause, 0)
 		button("Sair",550,450,100,50,red,bright_red,20,quitgame, 0)
@@ -190,16 +188,16 @@ def deathscreen():
 		button("Menu", 600, 500, 240, 50, green, bright_green, 30, game_intro, 0)
 		name = ask(gameDisplay, "Name")
 		le = open('highscore.txt','r')
-        	esq = open('highscore.txt','w')
-        	s = le.readline()
-        	name = ask(gameDisplay, "Name")
-        	for x in range(-1,-len(s),-1):
-        		if s[x] == ' ':
-        			nbr = s[x+1:]
-        		if eval(nbr) < score:
-        			esq.write(name + str(score))
-        	le.close()
-        	esq.close()
+		esq = open('highscore.txt','w')
+		s = le.readline()
+		name = ask(gameDisplay, "Name")
+		for x in range(-1,-len(s),-1):
+			if s[x] == ' ':
+				nbr = s[x+1:]
+			if eval(nbr) < score:
+				esq.write(name + str(score))
+		le.close()
+		esq.close()
 
 		pygame.display.update()
 		clock.tick(15)

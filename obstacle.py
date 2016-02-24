@@ -54,7 +54,7 @@ class obstacle(pygame.sprite.Sprite):
         return self.speed
 
     def update_speed(self, value):
-        self.speed = value
+        self.speed += value
 
     def update(self):
         self.rect.y += self.speed
