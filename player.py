@@ -48,5 +48,8 @@ class player(pygame.sprite.Sprite):
     def update_hp(self, value):
         self.health += value
 
+    def reset(self):
+        self.rect.x = display_width/2
+
     def hp(self):
         return self.health

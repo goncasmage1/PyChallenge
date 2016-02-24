@@ -25,13 +25,13 @@ pygame.display.set_caption("Trivialidades")
 clock = pygame.time.Clock()
 
 is_god = False
-
 intro = True
 selecting = True
 GG = False
 side_shooting = False
 ultima_cadeira = ""
 score = 0
+pause = False
 
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC"]

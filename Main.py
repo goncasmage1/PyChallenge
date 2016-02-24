@@ -29,18 +29,11 @@ def retry():
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 
-	aluno = pygame.sprite.GroupSingle(player())
-	obstacleGroup = pygame.sprite.Group()
+	user.reset()
+	obstacleGroup.empty()
 	
 	cadeira = [obstacle(random.choice(cadeiras_ref))]
 	obstacleGroup.add(cadeira)
-
-	#desenhar o jogador e esperar 1 segundo
-
-	#gameDisplay.fill(white)
-	#aluno.draw()
-	#pygame.display.update()
-	#pygame.time.wait(1000)
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
@@ -56,6 +49,38 @@ def god_mode():
 	is_god = True
 	side_shooting = True
 	game_loop()
+
+
+#sai do menu de pausa
+def unpause():
+	global pause
+	pause = False
+
+
+#menu de pausa
+def paused():
+	global pause
+
+	while pause:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_p:
+						pause = False
+		
+		gameDisplay.fill(white)
+		
+		#mostra o texto de introducao
+		screen_text_center("Pausa",display_width/2,display_height/4,70)
+		
+		button("Continuar",150,450,100,50,green,bright_green,20,unpause, 0)
+		button("Sair",550,450,100,50,red,bright_red,20,quitgame, 0)
+		
+		pygame.display.update()
+		clock.tick(15)
 
 
 #escreve texto no ecra a comecar na posicao atribuida
@@ -91,8 +116,7 @@ def button(msg,x,y,w,h,ic,ac,size,action,mode):
 	else:
 		pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
-	if mode:
-		screen_text_center(msg, x + w/2, y + h/2, size)
+	screen_text_center(msg, x + w/2, y + h/2, size)
 
 
 #desenha a barra de vida
@@ -119,9 +143,9 @@ def game_intro():
 		screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
 
 		if intro:
-			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,intro)
+			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
 		if intro:
-			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,intro)
+			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
 			
 		table = open('highscore.txt','r')
 		s = table.readline()
@@ -146,10 +170,10 @@ def select_mode():
 
 		#mostra os botoes
 		if selecting:
-			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, selecting)
+			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, 0)
 
 		if selecting:
-			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, selecting)
+			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
 
 		if selecting:
 			button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
@@ -176,20 +200,19 @@ def deathscreen():
 		clock.tick(15)
 
 def game_loop():
-	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira
+	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user, bullets, bulletSprites, obstacleGroup, cadeira, pause
 
 	intro = False
 	selecting = False
 	colliding = False
 	collide_change = False
 	pos_change = 0
+	
+	aluno = pygame.sprite.GroupSingle(player())
+	user = (aluno.sprites())[0]
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
-
-
-	aluno = pygame.sprite.GroupSingle(player())
 	obstacleGroup = pygame.sprite.Group()
-	
 	cadeira = [obstacle(random.choice(cadeiras_ref))]
 	obstacleGroup.add(cadeira)
 
@@ -204,8 +227,6 @@ def game_loop():
 
 	while True:
 
-		if GG:
-			crash()
 		pygame.display.update()
 
 		#obtem a posicao do aluno
@@ -231,6 +252,9 @@ def game_loop():
 					pos_change -= 1
 				if event.key == pygame.K_d:
 					pos_change += 1
+				if event.key == pygame.K_p:
+					pause = True
+					paused()
 
 				#move as balas
 				if event.key == pygame.K_UP:
@@ -246,7 +270,6 @@ def game_loop():
 					bullets+=bulletA
 					bulletSprites.add(bulletA[0])
 
-
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_a:
 					pos_change += 1
@@ -261,8 +284,6 @@ def game_loop():
 		aluno.draw(gameDisplay)
 		aluno.update(pos_change)
 		screen_text_center('score: ' +str(score) , 700, 550, 30)
-
-		user = (aluno.sprites())[0]
 
 		#detecao de colisoes
 		for obstaculo in obstacleGroup:
@@ -321,6 +342,9 @@ def game_loop():
 
 		#health_bar(aluno.hp)
 
+		if GG:
+			crash()
+
 		#update
 		bulletSprites.update()
 		bulletSprites.draw(gameDisplay)
@@ -340,9 +364,9 @@ def crash():
 				quit()
 				
 		if GG:
-			button("Tentar novamente",150,400,200,50,green,bright_green,20,retry,GG)
+			button("Tentar novamente",150,400,200,50,green,bright_green,20,retry,0)
 		if GG:
-			button("Sair",550,400,100,50,red,bright_red,20,quitgame,GG)
+			button("Sair",550,400,100,50,red,bright_red,20,quitgame,0)
 
 		pygame.display.update()
 		clock.tick(15)
