@@ -12,6 +12,9 @@ red = (200,0,0)
 green = (0,200,0)
 blue = (0,0,200)
 orange = (255,215,0)
+purple = (255,0,255)
+yellow = (255,255,0)
+cyan = (0,255,255)
 
 bright_red = (255,0,0)
 bright_green = (0,255,0)
@@ -23,6 +26,9 @@ pygame.init()
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("Trivialidades")
 clock = pygame.time.Clock()
+
+intro_background = pygame.image.load("Imagens/intro_background.png")
+game_background = pygame.image.load("Imagens/game_background.png")
 
 is_god = False
 intro = True

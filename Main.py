@@ -86,8 +86,8 @@ def paused():
 
 
 #escreve texto no ecra a comecar na posicao atribuida
-def screen_text(text,x,y,size):
-	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, black)
+def screen_text(text,x,y,size, color):
+	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, color)
 	text_surface_size = text_surface.get_size()
 	text_rect = text_surface.get_rect()
 	text_rect.center = (x + text_surface_size[0]/2,y)
@@ -95,8 +95,8 @@ def screen_text(text,x,y,size):
 
 
 #escreve texto no ecra centrado na posicao atribuida
-def screen_text_center(text,x,y,size):
-	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, black)
+def screen_text_center(text,x,y,size, color):
+	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, color)
 
 	text_rect = text_surface.get_rect()
 	text_rect.center = (x,y)
@@ -118,13 +118,8 @@ def button(msg,x,y,w,h,ic,ac,size,action,mode):
 	else:
 		pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
-	screen_text_center(msg, x + w/2, y + h/2, size)
+	screen_text_center(msg, x + w/2, y + h/2, size, black)
 
-
-#desenha a barra de vida
-def health_bar(vida):
-	pygame.draw.rect(gameDisplay, black, (50, 50, 150, 40), 2)
-	#pygame.draw.rect(gameDisplay, red, (50, 50, 150*(vida/100), 40))
 
 
 
@@ -139,10 +134,10 @@ def game_intro():
 				pygame.quit()
 				quit()
 
-		gameDisplay.fill(white)
+		gameDisplay.blit(intro_background, (0, 0))
 
 		#mostra o texto de introducao
-		screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
+		screen_text_center("Trivialidades", display_width/2, display_height/6, 50, white)
 
 		if intro:
 			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
@@ -151,7 +146,7 @@ def game_intro():
 			
 		table = open('highscore.txt','r')
 		s = table.readline()
-		screen_text_center("Highscore: " + s +" ECT'S" , 400, 570, 25)
+		screen_text_center("Highscore: " + s +" ECT'S" , 400, 550, 25, white)
 		table.close
 		pygame.display.update()
 		clock.tick(15)
@@ -165,10 +160,10 @@ def select_mode():
 				pygame.quit()
 				quit()
 
-		gameDisplay.fill(white)
+		gameDisplay.blit(intro_background, (0, 0))
 
 		#mostra o texto de introducao
-		screen_text_center("Modo de jogo", display_width/2, display_height/8, 50)
+		screen_text_center("Modo de jogo", display_width/2, display_height/8, 50, white)
 
 		#mostra os botoes
 		if selecting:
@@ -191,7 +186,7 @@ def deathscreen():
 				pygame.quit()
 				quit()
 		gameDisplay.fill(Red)
-		screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
+		screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70, white)
 		button("Menu", 600, 500, 240, 50, green, bright_green, 30, game_intro, 0)
 		name = ask(gameDisplay, "Name")
 		le = open('highscore.txt','r')
@@ -210,13 +205,16 @@ def deathscreen():
 		clock.tick(15)
 
 def game_loop():
-	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user, bullets, bulletSprites, obstacleGroup, cadeira, pause
+	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user, bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting
 
 	intro = False
 	selecting = False
 	colliding = False
 	collide_change = False
 	pos_change = 0
+	shooting = True
+	shoot_time = 800
+	color_change = black
 	
 	aluno = pygame.sprite.GroupSingle(player())
 	user = (aluno.sprites())[0]
@@ -255,6 +253,12 @@ def game_loop():
 				obstacleGroup.add(cadeira)
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
+			if event.type == USEREVENT + 2:
+				shooting = True
+
+			if event.type == USEREVENT + 3:
+				color_change = black
+
 			if event.type == pygame.KEYDOWN:
 
 				#move o jogador
@@ -268,17 +272,43 @@ def game_loop():
 
 				#move as balas
 				if event.key == pygame.K_UP:
-					bulletA = [bullet(aluno_pos[0], 2)]
-					bullets+=bulletA
-					bulletSprites.add(bulletA[0])
+					if not is_god:
+						if shooting:
+							pygame.time.set_timer(USEREVENT + 2, shoot_time)
+							shooting = False
+							bulletA = [bullet(aluno_pos[0], 2)]
+							bullets+=bulletA
+							bulletSprites.add(bulletA[0])
+					else:
+						bulletA = [bullet(aluno_pos[0], 2)]
+						bullets+=bulletA
+						bulletSprites.add(bulletA[0])
+
 				if event.key == pygame.K_LEFT and side_shooting:
-					bulletA = [bullet(aluno_pos[0]-14, 1)]
-					bullets+=bulletA
-					bulletSprites.add(bulletA[0])
+					if not is_god:
+						if shooting:
+							pygame.time.set_timer(USEREVENT + 2, shoot_time)
+							shooting = False
+							bulletA = [bullet(aluno_pos[0], 1)]
+							bullets+=bulletA
+							bulletSprites.add(bulletA[0])
+					else:
+						bulletA = [bullet(aluno_pos[0], 1)]
+						bullets+=bulletA
+						bulletSprites.add(bulletA[0])
+
 				if event.key == pygame.K_RIGHT and side_shooting:
-					bulletA = [bullet(aluno_pos[0]+10, 3)]
-					bullets+=bulletA
-					bulletSprites.add(bulletA[0])
+					if not is_god:
+						if shooting:
+							pygame.time.set_timer(USEREVENT + 2, shoot_time)
+							shooting = False
+							bulletA = [bullet(aluno_pos[0], 3)]
+							bullets+=bulletA
+							bulletSprites.add(bulletA[0])
+					else:
+						bulletA = [bullet(aluno_pos[0], 3)]
+						bullets+=bulletA
+						bulletSprites.add(bulletA[0])
 
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_a:
@@ -286,14 +316,15 @@ def game_loop():
 				elif event.key == pygame.K_d:
 					pos_change -= 1
 
-		gameDisplay.fill(white)
+		gameDisplay.blit(game_background, (0, 0))
 
 		obstacleGroup.draw(gameDisplay)
 		obstacleGroup.update()
 
 		aluno.draw(gameDisplay)
 		aluno.update(pos_change)
-		screen_text_center('score: ' +str(score) , 700, 550, 30)
+		screen_text_center("ECT'S: " + str(score) , 700, 20, 20, black)
+		screen_text_center("Paciencia: " +str(user.hp()) , 100, 20, 20, color_change)
 
 		#detecao de colisoes
 		for obstaculo in obstacleGroup:
@@ -344,13 +375,14 @@ def game_loop():
 		if colliding and not collide_change:
 			collide_change = True
 			user.update_hp(-1)
+			pygame.time.set_timer(USEREVENT + 3, 500)
+			color_change = bright_red
+
 
 		elif not colliding and collide_change:
 			collide_change = False
 
 		colliding = False
-
-		#health_bar(aluno.hp)
 
 		if GG:
 			crash()
@@ -364,8 +396,8 @@ def game_loop():
 
 def crash():
 	global score, GG, ultima_cadeira
-	screen_text_center(ultima_cadeira + " moeu-te o juizo!", display_width/2, display_height/4, 70)
-	screen_text_center("score: " + str(score) + " ECT'S", display_width/2, display_height/2, 40)
+	screen_text_center(ultima_cadeira + " moeu-te o juizo!", display_width/2, display_height/8+50, 70, black)
+	screen_text_center("score: " + str(score) + " ECT'S", display_width/2, display_height/3+40, 40, black)
 
 	while GG:
 		for event in pygame.event.get():
