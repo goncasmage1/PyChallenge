@@ -197,7 +197,7 @@ def deathscreen():
         		if s[x] == ' ':
         			nbr = s[x+1:]
         		if eval(nbr) < score:
-        			esq.write(name + str(score))
+        			esq.write(name +' ' + str(score))
         	le.close()
         	esq.close()
 
