@@ -193,10 +193,18 @@ def deathscreen():
 		gameDisplay.fill(Red)
 		screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
 		button("Menu", 600, 500, 240, 50, green, bright_green, 30, game_intro, 0)
-		fich = open('highscore.txt','w')
 		name = ask(gameDisplay, "Name")
-		fich.write(name + str(score))
-
+		le = open('highscore.txt','r')
+        	esq = open('highscore.txt','w')
+        	s = le.readline()
+        	name = ask(gameDisplay, "Name")
+        	for x in range(-1,-len(s),-1):
+        		if s[x] == ' ':
+        			nbr = s[x+1:]
+        		if eval(nbr) < score:
+        			esq.write(name + str(score))
+        	le.close()
+        	esq.close()
 
 		pygame.display.update()
 		clock.tick(15)
