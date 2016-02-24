@@ -27,7 +27,7 @@ class obstacle(pygame.sprite.Sprite):
         self.image = self.surface
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
         print (self.rect.size)
-        self.speed = 4
+        self.speed = 3
 
     def dif(self):
         return self.difficulty

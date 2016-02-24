@@ -35,12 +35,6 @@ def god_mode():
 	game_loop()
 
 
-def is_on_screen(coor):
-	if coor[0] < 0 or coor[0] > display_width or coor[1] < 0 or coor[1] > display_height:
-		return False
-	else:
-		return True
-
 #escreve texto no ecra a comecar na posicao atribuida
 def screen_text(text,x,y,size):
 	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, black)
@@ -75,7 +69,6 @@ def button(msg,x,y,w,h,ic,ac,size,action,mode):
 		pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
 	if mode:
-		print(mode)
 		screen_text_center(msg, x + w/2, y + h/2, size)
 
 
@@ -109,7 +102,7 @@ def game_intro():
 			
 		table = open('highscore.txt','r')
 		s = table.readline()
-		screen_text_center('Highscore: ' + s +' points' , 400, 570, 25)
+		screen_text_center("Highscore: " + s +" ECT'S" , 400, 570, 25)
 		table.close
 		pygame.display.update()
 		clock.tick(15)
@@ -159,7 +152,7 @@ def deathscreen():
 		clock.tick(15)
 
 def game_loop():
-	global is_god, intro, selecting, GG, side_shooting, score, intro
+	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira
 
 	intro = False
 	selecting = False
@@ -168,6 +161,7 @@ def game_loop():
 	pos_change = 0
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
+
 
 	aluno = pygame.sprite.GroupSingle(player())
 	obstacleGroup = pygame.sprite.Group()
@@ -247,7 +241,8 @@ def game_loop():
 		for obstaculo in obstacleGroup:
 
 			if pygame.sprite.collide_rect(user, obstaculo):
-				colliding = True
+				if obstaculo.dif() != 0:
+					colliding = True
 
 				if is_god:
 					score += 20
@@ -255,6 +250,7 @@ def game_loop():
 				else:
 					if user.is_dead():
 						user.update_hp(3)
+						ultima_cadeira = obstaculo.nome()
 						GG = True
 						break
 
@@ -263,7 +259,7 @@ def game_loop():
 					if is_god:
 						score += 40
 					else:
-						score += 5
+						score += 2
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 				elif obstaculo.dif() == 1:
 					if is_god:
@@ -274,6 +270,7 @@ def game_loop():
 				elif obstaculo.dif() == 2:
 					if is_god:
 						score += 150
+						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					else:
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
 
@@ -305,9 +302,9 @@ def game_loop():
 
 
 def crash():
-	global score
-	screen_text_center("Nao SobrevivISTe!", display_width/2, display_height/4, 70)
-	screen_text_center("score: " + str(score), display_width/2, display_height/2, 40)
+	global score, GG, ultima_cadeira
+	screen_text_center(ultima_cadeira + " moeu-te o juizo!", display_width/2, display_height/4, 70)
+	screen_text_center("score: " + str(score) + " ECT'S", display_width/2, display_height/2, 40)
 
 	while GG:
 		for event in pygame.event.get():
@@ -316,9 +313,9 @@ def crash():
 				quit()
 				
 		if GG:
-			button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,GG)
+			button("Tentar novamente",150,400,200,50,green,bright_green,20,retry,GG)
 		if GG:
-			button("Sair",550,450,100,50,red,bright_red,20,quitgame,GG)
+			button("Sair",550,400,100,50,red,bright_red,20,quitgame,GG)
 
 		pygame.display.update()
 		clock.tick(15)
