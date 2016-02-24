@@ -7,19 +7,6 @@ from settings import *
 from inputbox import *
 
 
-"""
-PROBLEMAS:
-
-butoes nao funcionam 100%
-colliderect nao funciona
-health_bar() "nao suporta divisao com metodos, so que o metodo e suposto ser um numero..."
-"""
-
-"""
-TO DO:
-
-arranjar uma maneira estavel de gerar mais cadeiras
-"""
 #FUNCOES "AUXILIARES"
 
 #sai do jogo
@@ -74,29 +61,22 @@ def screen_text_center(text,x,y,size):
 #desenha um botao com uma acao associada
 def button(msg,x,y,w,h,ic,ac,size,action,mode):
 
+	global intro, selecting, GG
+
 	mouse = pygame.mouse.get_pos()
 	click = pygame.mouse.get_pressed()
 
-	#se a funcao receber o ultimo argumento
-	if mode != 0:
-		if x + w > mouse[0] > x and y + h > mouse[1] > y:
-			pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
-			if click[0] == 1 and action != None:
-				action(mode)
-		else:
-			pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
+	if x + w > mouse[0] > x and y + h > mouse[1] > y:
+		pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
+		if click[0] == 1 and action != None:
+			action()
 
-	#se a funcao nao receber o ultimo argumento
 	else:
-		if x + w > mouse[0] > x and y + h > mouse[1] > y:
-			pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
-			if click[0] == 1 and action != None:
-				action()
+		pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
 
-		else:
-			pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
-
-	screen_text_center(msg, x + w/2, y + h/2, size)
+	if mode:
+		print(mode)
+		screen_text_center(msg, x + w/2, y + h/2, size)
 
 
 #desenha a barra de vida
@@ -123,9 +103,9 @@ def game_intro():
 		screen_text_center("Trivialidades", display_width/2, display_height/6, 50)
 
 		if intro:
-			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
+			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,intro)
 		if intro:
-			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,intro)
 			
 		table = open('highscore.txt','r')
 		s = table.readline()
@@ -150,10 +130,10 @@ def select_mode():
 
 		#mostra os botoes
 		if selecting:
-			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, 0)
+			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, selecting)
 
 		if selecting:
-			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
+			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, selecting)
 
 		if selecting:
 			button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
@@ -184,6 +164,7 @@ def game_loop():
 	intro = False
 	selecting = False
 	colliding = False
+	collide_change = False
 	pos_change = 0
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
@@ -264,7 +245,6 @@ def game_loop():
 
 		#detecao de colisoes
 		for obstaculo in obstacleGroup:
-			print(user.hp())
 
 			if pygame.sprite.collide_rect(user, obstaculo):
 				colliding = True
@@ -277,14 +257,6 @@ def game_loop():
 						user.update_hp(3)
 						GG = True
 						break
-
-					elif not colliding:
-						print(colliding)
-						user.update_hp(-1)
-
-			elif not colliding:
-				print("no")
-				not_colliding = True
 
 			if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
 				if obstaculo.dif() == 0:
@@ -314,6 +286,15 @@ def game_loop():
 					score += 3
 				obstacleGroup.remove(obstaculo)
 
+		if colliding and not collide_change:
+			collide_change = True
+			user.update_hp(-1)
+
+		elif not colliding and collide_change:
+			collide_change = False
+
+		colliding = False
+
 		#health_bar(aluno.hp)
 
 		#update
@@ -335,13 +316,12 @@ def crash():
 				quit()
 				
 		if GG:
-			button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,0)
+			button("Tentar novamente",150,450,200,50,green,bright_green,20,retry,GG)
 		if GG:
-			button("Sair",550,450,100,50,red,bright_red,20,quitgame,0)
+			button("Sair",550,450,100,50,red,bright_red,20,quitgame,GG)
 
-		if GG:
-			pygame.display.update()
-			clock.tick(15)
+		pygame.display.update()
+		clock.tick(15)
 
 
 game_intro()
