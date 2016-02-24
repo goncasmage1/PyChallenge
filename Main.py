@@ -6,6 +6,8 @@ from bullet import *
 from settings import *
 from inputbox import *
 
+# comentario desnecessario
+
 
 #FUNCOES "AUXILIARES"
 
