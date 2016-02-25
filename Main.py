@@ -6,9 +6,6 @@ from bullet import *
 from settings import *
 from inputbox import *
 
-# comentario desnecessario
-
-
 #FUNCOES "AUXILIARES"
 
 #sai do jogo
@@ -96,7 +93,6 @@ def screen_text(text,x,y,size, color):
 #escreve texto no ecra centrado na posicao atribuida
 def screen_text_center(text,x,y,size, color):
 	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, color)
-
 	text_rect = text_surface.get_rect()
 	text_rect.center = (x,y)
 	gameDisplay.blit(text_surface,text_rect)
@@ -142,7 +138,7 @@ def game_intro():
 			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
 		if intro:
 			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
-			
+
 		table = open('highscore.txt','r')
 		s = table.readline()
 		screen_text_center("Highscore: " + s +" ECT'S" , 400, 550, 25, white)
@@ -233,7 +229,7 @@ def game_loop():
 	#pygame.display.update()
 	#pygame.time.wait(1000)
 
-	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 + time_change, 1500 + time_change))
+	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 - time_change, 1500 - time_change))
 
 	while True:
 
@@ -369,6 +365,7 @@ def game_loop():
 						score += 150
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					else:
+						score += 10
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
 					obstacle_speed += speed_change
 					time_change += 25

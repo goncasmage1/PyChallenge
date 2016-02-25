@@ -39,26 +39,5 @@ ultima_cadeira = ""
 score = 0
 pause = False
 
-cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1}
-cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC"]
-
-def msgSurface(text,textSize,textColor,backgroundColor,outlineColor, verticalOffset, horizontaOffset,screen):
-    """
-    outlineColor for text outter window color,
-    vertical and horizontalOffset from original backgroundSurface center coordinates =(0,0) in background Surface
-    must receive "main surface" ->special displayed surface in the last argument
-    returns textSurface and center of rectangle in the rectangle referential(top-left (0,0))
-    """
-
-    width, height = screen.get_size()
-    # can also set text object's font in arguments
-    ## sets fonts
-    textFont = pygame.font.Font('freesansbold.ttf', textSize)
-    ## auxiliary function
-    titleTextSurf, titleTextRect = makeTextObjs(text,textFont , textColor, black)
-    titleTextRect.center = (int(width/2)+ horizontaOffset , int(height/2)+ verticalOffset)          ## set CenterCoords
-
-    pygame.draw.rect(screen, outlineColor,titleTextRect,10) #draw built-in outline
-    ## blit -> draws image on top of another
-    screen.blit(titleTextSurf, titleTextRect) ## adds image
-    return titleTextSurf, titleTextRect.center
+cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1, "IAED":1, "SO":1, "ES":2, "PO":0, "Comp":2}
+cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC", "IAED", "SO", "ES", "PO", "Comp"]

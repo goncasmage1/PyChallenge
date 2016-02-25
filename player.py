@@ -45,6 +45,12 @@ class player(pygame.sprite.Sprite):
     def is_dead(self):
         return (self.health == 0)
 
+    def get_power(self, value):
+        if value == 0:
+            pass
+        elif value == 1:
+            pass
+
     def update_hp(self, value):
         self.health += value
 
