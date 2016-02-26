@@ -3,7 +3,7 @@ import random
 import sys
 from settings import *
 
-class obstacle(pygame.sprite.Sprite):
+class power_up(pygame.sprite.Sprite):
     def __init__(self, power):
         super().__init__()
         self.power = power
