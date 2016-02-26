@@ -11,7 +11,7 @@ class player(pygame.sprite.Sprite):
         self.w = 40
         self.h = 40
         self.health = 3
-        self.speed = 4
+        self.speed = 5
         self.image = pygame.image.load("Imagens/player.png")
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
 

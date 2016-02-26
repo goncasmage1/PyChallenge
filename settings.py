@@ -29,6 +29,7 @@ clock = pygame.time.Clock()
 
 intro_background = pygame.image.load("Imagens/intro_background.png")
 game_background = pygame.image.load("Imagens/game_background.png")
+new_highscore = pygame.image.load("Imagens/new_record.png")
 
 is_god = False
 intro = True
@@ -41,3 +42,92 @@ pause = False
 
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1, "IAED":1, "SO":1, "ES":2, "PO":0, "Comp":2}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC", "IAED", "SO", "ES", "PO", "Comp"]
+
+
+#FUNCOES AUXILIARES
+
+#sai do jogo
+def quitgame():
+	pygame.quit()
+	quit()
+	
+
+#escreve texto no ecra a comecar na posicao atribuida
+def screen_text(text,x,y,size, color):
+	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, color)
+	text_surface_size = text_surface.get_size()
+	text_rect = text_surface.get_rect()
+	text_rect.center = (x + text_surface_size[0]/2,y)
+	gameDisplay.blit(text_surface,text_rect)
+
+
+#escreve texto no ecra centrado na posicao atribuida
+def screen_text_center(text,x,y,size, color):
+	text_surface = pygame.font.Font("freesansbold.ttf",size).render(text,True, color)
+	text_rect = text_surface.get_rect()
+	text_rect.center = (x,y)
+	gameDisplay.blit(text_surface,text_rect)
+
+#desenha um botao com uma acao associada
+def button(msg,x,y,w,h,ic,ac,size,action,mode):
+
+	global intro, selecting, GG
+
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+
+	if x + w > mouse[0] > x and y + h > mouse[1] > y:
+		pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
+		if click[0] == 1 and action != None:
+			action()
+	else:
+		pygame.draw.rect(gameDisplay, ic, (x,y,w,h))
+
+	screen_text_center(msg, x + w/2, y + h/2, size, black)
+
+
+def get_key():
+	while 1:
+		event = pygame.event.poll()
+		if event.type == KEYDOWN:
+			return event.key
+		else:
+			pass
+
+def display_box(screen, message):
+	"Print a message in a box in the middle of the screen"
+	fontobject = pygame.font.Font(None,40)
+	pygame.draw.rect(screen, black,
+					(screen.get_width()/2 - screen.get_width()/4-2, screen.get_height() / 2 - 12, screen.get_width()/2 + 4,44))
+	pygame.draw.rect(screen, white,
+					(screen.get_width() / 2 - screen.get_width() / 4, screen.get_height() / 2 - 10, screen.get_width() / 2,40))
+
+	if len(message) != 0:
+		text_size = fontobject.size(message)
+		screen.blit(fontobject.render(message, 1, black),
+				((screen.get_width()/2 - text_size[0]/2), (screen.get_height()/2 - text_size[1]/2)+10))
+	pygame.display.flip()
+
+def ask(screen):
+
+	pygame.font.init()
+	current_string = []
+	display_box(screen, "".join(current_string))
+	while 1:
+		
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+
+		inkey = get_key()
+		if inkey == K_BACKSPACE:
+			current_string = current_string[0:-1]
+		elif inkey == K_RETURN:
+			break
+		elif inkey == K_MINUS:
+			current_string.append("_")
+		elif inkey <= 127:
+			current_string.append(chr(inkey))
+		display_box(screen, "".join(current_string))
+	return "".join(current_string)

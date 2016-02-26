@@ -1,5 +1,6 @@
 import pygame, pygame.font, pygame.event, pygame.draw, string
 from pygame.locals import *
+from settings import *
 
 def get_key():
   while 1:
@@ -11,25 +12,25 @@ def get_key():
 
 def display_box(screen, message):
   "Print a message in a box in the middle of the screen"
-  fontobject = pygame.font.Font(None,18)
-  pygame.draw.rect(screen, (0,0,0),
+  fontobject = pygame.font.Font(None,25)
+  pygame.draw.rect(screen, white,
                    ((screen.get_width() / 2) - 100,
                     (screen.get_height() / 2) - 10,
-                    200,20), 0)
-  pygame.draw.rect(screen, (255,255,255),
+                    screen.get_width() / 2,40))
+  pygame.draw.rect(screen, black,
                    ((screen.get_width() / 2) - 102,
                     (screen.get_height() / 2) - 12,
-                    204,24), 1)
+                    (screen.get_width() / 2) + 10,50))
   if len(message) != 0:
-    screen.blit(fontobject.render(message, 1, (255,255,255)),
-                ((screen.get_width() / 2) - 100, (screen.get_height() / 2) - 10))
+    screen.blit(fontobject.render(message, 1, black),
+                ((screen.get_width() / 2-100), (screen.get_height() / 2)-5))
   pygame.display.flip()
 
-def ask(screen, question):
-  "ask(screen, question) -> answer"
+def ask(screen):
+  "ask(screen) -> answer"
   pygame.font.init()
   current_string = []
-  display_box(screen, question + ": " + string.join(current_string,""))
+  display_box(screen, "".join(current_string))
   while 1:
     inkey = get_key()
     if inkey == K_BACKSPACE:
@@ -40,14 +41,14 @@ def ask(screen, question):
       current_string.append("_")
     elif inkey <= 127:
       current_string.append(chr(inkey))
-    display_box(screen, question + ": " + string.join(current_string,""))
-  return string.join(current_string,"")
+    display_box(screen, "".join(current_string))
+  return "".join(current_string)
 
 def main():
-  fich = open('highscore.txt','w')
 
+  #fich = open('highscore.txt','w')
   screen = pygame.display.set_mode((320,240))
-  s = ask(screen, "Name") + " was entered"
+  s = ask(screen) + " - "
   fich.write(s)
 
 
