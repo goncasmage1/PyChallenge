@@ -2,6 +2,7 @@ import pygame, pygame.event, time, random
 from pygame.locals import *
 from player import *
 from obstacle import *
+from power_up import *
 from bullet import *
 from settings import *
 from inputbox import *
