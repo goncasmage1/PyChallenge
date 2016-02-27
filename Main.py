@@ -168,6 +168,8 @@ def game_loop():
 	shoot_time = 800
 	color_change = black
 	obstacle_speed = 3
+	num_obstacle = 1
+	obstacle_occupy = []
 	speed_change = 0.05
 	time_change = 0
 	score_string = ""
@@ -205,8 +207,13 @@ def game_loop():
 
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
-				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
-				obstacleGroup.add(cadeira)
+				for i in range(num_obstacle):
+					if obstacle_occupy == []:
+						cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
+						obstacle_occupy += [cadeira.occupy()]
+						obstacleGroup.add(cadeira)
+					else:
+						
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
 			if event.type == USEREVENT + 2:

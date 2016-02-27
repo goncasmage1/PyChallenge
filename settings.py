@@ -1,6 +1,5 @@
-import pygame
-import random
-import sys
+import pygame, pygame.event, time, random, sys
+from pygame.locals import *
 
 #ATRIBUICAO DE VALORES
 display_width = 800
