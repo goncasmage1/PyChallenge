@@ -2,9 +2,11 @@
 Desafio PyChallenge
 
 EXECUTAR:
+
 Abrir Main.py e correr.
 
 INSTRUÇÕES:
+
   És um aluno do IST e tens que destruir as cadeiras, antes que elas te destruam a ti!
   Se te desviares de uma cadeira ganhaa ECT'S, mas se a destruires ganhas ainda mais ECT'S.
   As cadeiras podem ter 3 dificuldades:
