@@ -130,3 +130,13 @@ def ask(screen):
 			current_string.append(chr(inkey))
 		display_box(screen, "".join(current_string))
 	return "".join(current_string)
+
+
+def random_coor(occupied, width):
+	previous = 0 + width
+	random_list = []
+	for i in range(len(occupied)):
+		random_list += [random.randint(previous-width, occupied[i][0])]
+		previous = occupied[i][1]
+
+	return random.choice(random_list)

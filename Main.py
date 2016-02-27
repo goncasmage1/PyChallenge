@@ -169,7 +169,6 @@ def game_loop():
 	color_change = black
 	obstacle_speed = 3
 	num_obstacle = 1
-	obstacle_occupy = []
 	speed_change = 0.05
 	time_change = 0
 	score_string = ""
@@ -182,6 +181,8 @@ def game_loop():
 	obstacleGroup = pygame.sprite.Group()
 	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
 	obstacleGroup.add(cadeira)
+
+	space_occupy = [cadeira[0].occupy()]
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 - time_change, 1500 - time_change))
 
@@ -208,11 +209,9 @@ def game_loop():
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
 				for i in range(num_obstacle):
-					if obstacle_occupy == []:
-						cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
-						obstacle_occupy += [cadeira.occupy()]
-						obstacleGroup.add(cadeira)
-					else:
+					cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, space_occupy)]
+					space_occupy += [cadeira[0].occupy()]
+					obstacleGroup.add(cadeira)
 						
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
@@ -338,6 +337,9 @@ def game_loop():
 			#quando o jogador ultrapassa um obstaculo
 			if obstaculo.pos()[1] > display_height + (obstaculo.height()):
 				obstacle_speed += speed_change
+
+				for i in range(num_obstacle):
+					space_occupy = space_occupy[1:]
 
 				if obstaculo.dif() == 0:
 					score += 1

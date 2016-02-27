@@ -27,16 +27,10 @@ class obstacle(pygame.sprite.Sprite):
         text_rect = text.get_rect()
         text_rect.center = ((self.w)/2,(self.h)/2)
 
-        if len(restriction) == 1:
-            self.x = random.randint(0 + self.w, display_width-self.w)
-            while restriction[0] > self.x > restriction[1] or restriction[0] > self.x + self.w > restriction[1]:
-                self.x = random.randint(0 + self.w, display_width-self.w)
-
-        elif len(restriction) >= 2:
-            for i in restriction:
-                self.x = random.randint(0 + self.w, display_width-self.w)
-            while self.x > restriction[0] and self.x + self.w < restriction[0]:
-                self.x = random.randint(0 + self.w, display_width-self.w)
+        if restriction != None:
+            print(restriction)
+            if len(restriction) >= 1:
+                self.x = random_coor(restriction, self.w)
 
         else:
             self.x = random.randint(0 + self.w, display_width-self.w)
