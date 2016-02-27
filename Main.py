@@ -211,6 +211,8 @@ def game_loop():
 				for i in range(num_obstacle):
 					cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, space_occupy)]
 					space_occupy += [cadeira[0].occupy()]
+					if len(space_occupy) > 1:
+						space_occupy = ordenar_lista(space_occupy)
 					obstacleGroup.add(cadeira)
 						
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
@@ -339,7 +341,7 @@ def game_loop():
 				obstacle_speed += speed_change
 
 				for i in range(num_obstacle):
-					space_occupy = space_occupy[1:]
+					#ver em que intervalo da lista "space_occupy" esta a posicao do obstaculo e apagar esse intervalo
 
 				if obstaculo.dif() == 0:
 					score += 1

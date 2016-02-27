@@ -133,10 +133,29 @@ def ask(screen):
 
 
 def random_coor(occupied, width):
-	previous = 0 + width
+	previous = 0 + width*2
 	random_list = []
 	for i in range(len(occupied)):
 		random_list += [random.randint(previous-width, occupied[i][0])]
 		previous = occupied[i][1]
 
 	return random.choice(random_list)
+
+
+def ordenar_lista(lista):
+	ordena = []
+	for i in lista:
+		print(i)
+		if ordena == []:
+			ordena += [i]
+		else:
+			for j in range(len(ordena)):
+				if i[0] < ordena[j][0]:
+					ordena = ordena[:j] + [i] + ordena[j:]
+					break
+				elif i[0] > ordena[-1][0]:
+					ordena += [i]
+
+	return ordena
+
+
