@@ -31,23 +31,24 @@ intro_background = pygame.image.load("Imagens/intro_background.png")
 game_background = pygame.image.load("Imagens/game_background.png")
 new_highscore = pygame.image.load("Imagens/new_record.png")
 
-soundtrack = pygame.mixer.Sound("Sounds/soundtrack2.ogg")
+soundtrack = pygame.mixer.Sound("Sounds/soundtrack.ogg")
 game_sound = pygame.mixer.find_channel()
 game_sound.queue(soundtrack)
 
-soundtrack2 = pygame.mixer.Sound("Sounds/soundtrack2.ogg")
+soundtrack_2 = pygame.mixer.Sound("Sounds/soundtrack_2.ogg")
 god_sound = pygame.mixer.find_channel()
-god_sound.queue(soundtrack2)
+god_sound.queue(soundtrack_2)
+god_sound.stop()
 
 gasp = pygame.mixer.Sound("Sounds/gasp_sound.ogg")
 gasp_sound = pygame.mixer.find_channel()
-gasp_sound.set_volume(0)
 gasp_sound.queue(gasp)
+gasp_sound.stop()
 
 death = pygame.mixer.Sound("Sounds/death_sound.ogg")
 death_sound = pygame.mixer.find_channel()
-death_sound.set_volume(0)
 death_sound.queue(death)
+death_sound.stop()
 
 
 is_god = False

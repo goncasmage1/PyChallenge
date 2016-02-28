@@ -11,7 +11,7 @@ from settings import *
 #permite o jogador tentar outra vez
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
-	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change
+	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change, is_god
 
 	intro = False
 	selecting = False
@@ -23,8 +23,11 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
-	game_sound.unpause()
 
+	if is_god:
+		god_sound.unpause()
+	else:
+		game_sound.unpause()
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 
@@ -84,7 +87,6 @@ def paused():
 def game_intro():
 	global intro
 
-	game_sound.play(soundtrack2)
 	while intro:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -175,8 +177,10 @@ def game_loop():
 	time_change = 0
 	score_string = ""
 	name_string = ""
-	gasp_sound.set_volume(1)
-	death_sound.set_volume(1)
+
+	if is_god:
+		game_sound.stop()
+		god_sound.play(soundtrack)
 
 	aluno = pygame.sprite.GroupSingle(player())
 	user = (aluno.sprites())[0]
@@ -219,7 +223,10 @@ def game_loop():
 
 			if event.type == USEREVENT + 3:
 				color_change = black
-				game_sound.unpause()
+				if is_god:
+					god_sound.pause()
+				else:
+					game_sound.unpause()
 
 			if event.type == pygame.KEYDOWN:
 
@@ -302,7 +309,10 @@ def game_loop():
 					if user.is_dead():
 						user.update_hp(3)
 						ultima_cadeira = obstaculo.nome()
-						game_sound.pause()
+						if is_god:
+							god_sound.pause()
+						else:
+							game_sound.pause()
 						death_sound.play(death)
 						GG = True
 						break
@@ -352,7 +362,6 @@ def game_loop():
 		if colliding and not collide_change:
 			collide_change = True
 			user.update_hp(-1)
-			#game_sound.pause()
 			if user.hp() != 0:
 				gasp_sound.play(gasp)
 			pygame.time.set_timer(USEREVENT + 3, 500)
