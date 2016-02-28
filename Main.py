@@ -101,11 +101,11 @@ def game_intro():
 		screen_text_center("Trivialidades", display_width/2, display_height/6, 50, white)
 
 		if intro:
-			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
+			button("Jogar",display_width/2 - 100,display_height/3,200,100,linen,cornsilk,40,select_mode,0)
 		if intro:
-			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+			button("Sair",display_width/2 - 100,display_height/3*2,200,100,linen,cornsilk,40,quitgame,0)
 		if intro:
-			button("Duvidas",display_width/2 - 100,display_height/4*3 - 15 ,200,100,blue,bright_blue,40,help_screen,0)
+			button("Duvidas",display_width/2 - 100,display_height/4*3 - 15 ,200,100,linen,cornsilk,40,help_screen,0)
 
 		table = open('highscore.txt','r')
 		s = table.readline()
@@ -132,10 +132,10 @@ def select_mode():
 
 		#mostra os botoes
 		if selecting:
-			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, 0)
+			button("Student Mode", display_width/3-200, display_height/2, 240, 50, linen, cornsilk, 30, game_loop, 0)
 
 		if selecting:
-			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
+			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, linen, cornsilk, 30, god_mode, 0)
 
 		if selecting:
 			button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
@@ -166,7 +166,7 @@ def help_screen():
 		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 70, 530, 20 ,black )
 		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/12-1, 50, black)
 		screen_text_center("Horario de Duvidas", display_width/2, display_height/12, 50, white)
-		button("Voltar",550,450,200,100,linen,linen,40,game_intro,0)
+		button("Voltar",550,450,200,100,linen,cornsilk,40,game_intro,0)
 
 		pygame.display.update()
 		clock.tick(15)
