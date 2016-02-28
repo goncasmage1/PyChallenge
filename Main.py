@@ -5,7 +5,6 @@ from obstacle import *
 from power_up import *
 from bullet import *
 from settings import *
-from helper import *
 
 #FUNCOES
 
@@ -41,10 +40,6 @@ def retry():
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
 
-def game_intro():
-	global selecting
-	selecting = False
-
 
 #comeca o jogo em god mode
 def god_mode():
@@ -59,6 +54,17 @@ def unpause():
 	global pause
 	pause = False
 
+
+#sai do menu de select
+def unselect():
+	global selecting
+	selecting = False
+
+
+#sai do menu de duvidas
+def unread():
+	global reading
+	reading = False
 
 #menu de pausa
 def paused():
@@ -105,7 +111,7 @@ def game_intro():
 		if intro:
 			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
 		if intro:
-			button("Duvidas",display_width/2 - 100,display_height/4*3 - 15 ,200,100,blue,bright_blue,40,help_screen,0)
+			button("Duvidas",display_width - 220,display_height/2 + 20 ,200,60,blue,bright_blue,40,help_screen,0)
 
 		table = open('highscore.txt','r')
 		s = table.readline()
@@ -114,10 +120,37 @@ def game_intro():
 		table.close
 		pygame.display.update()
 		clock.tick(15)
+
+
+def help_screen():
+	global reading
+	reading = True
+	while reading:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+
+		gameDisplay.blit(intro_background, (0, 0))
+
+		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/8-1, 50, black)
+		screen_text_center("Horario de Duvidas", display_width/2, display_height/8, 50, white)
+
+		screen_text("Comandos:", 30, 130, 30 ,black )
+		screen_text("A - esquerda", 30, 160, 30 ,black )
+		screen_text("D - direita", 30, 190, 30 ,black )
+		screen_text("Setas - disparar", 30, 220, 30 ,black )
+
+		if selecting:
+			button("Voltar", 100, display_height-100, 100, 50, orange, bright_orange, 30, unread, 0)
+
+		pygame.display.update()
+		clock.tick(15)
 	   
 
 def select_mode():
-
+	global selecting
+	selecting = True
 	while selecting:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -138,7 +171,7 @@ def select_mode():
 			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
 
 		if selecting:
-			button("Voltar", 100, 600, 100, 50, orange, bright_orange, 30, game_intro, 0)
+			button("Voltar", 100, display_height-100, 100, 50, orange, bright_orange, 30, unselect, 0)
 
 		pygame.display.update()
 		clock.tick(15)
