@@ -11,7 +11,8 @@ from settings import *
 #permite o jogador tentar outra vez
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
-	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change, is_god
+	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change,\
+	is_god, just_dead
 
 	intro = False
 	selecting = False
@@ -23,6 +24,14 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
+
+	if just_dead and pygame.key.get_pressed()[pygame.K_a]:
+		just_dead = False
+		pos_change = -1
+
+	elif just_dead and pygame.key.get_pressed()[pygame.K_d]:
+		just_dead = False
+		pos_change = 1
 
 	if is_god:
 		god_sound.unpause()
@@ -68,7 +77,9 @@ def unread():
 
 #menu de pausa
 def paused():
-	global pause
+	global pause, just_dead
+
+	just_dead = True
 
 	while pause:
 		for event in pygame.event.get():
@@ -111,7 +122,7 @@ def game_intro():
 		if intro:
 			button("Sair",display_width/2 - 100,display_height/3*2,200,100,linen,cornsilk,40,quitgame,0)
 		if intro:
-			button("Duvidas",display_width - 220, display_height/2 + 20,200,100,linen,cornsilk,40,help_screen,0)
+			button("Duvidas",display_width - 220, display_height/2 + 20,200,50,linen,cornsilk,40,help_screen,0)
 
 		table = open('highscore.txt','r')
 		s = table.readline()
@@ -136,13 +147,14 @@ def help_screen():
 		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/8-1, 50, black)
 		screen_text_center("Horario de Duvidas", display_width/2, display_height/8, 50, white)
 
-		screen_text("Comandos:", 30, 130, 30 ,black )
-		screen_text("A - esquerda", 30, 160, 30 ,black )
-		screen_text("D - direita", 30, 190, 30 ,black )
-		screen_text("Setas - disparar", 30, 220, 30 ,black )
+		screen_text("Comandos:", 20, 130, 28 ,black )
+		screen_text("A - esquerda", 30, 160, 28 ,black )
+		screen_text("D - direita", 30, 190, 28 ,black )
+		screen_text("Setas - disparar", 30, 220, 28 ,black )
+		screen_text("P - pausa", 30, 230, 28 ,black )
 
 		if selecting:
-			button("Voltar", 100, display_height-100, 100, 50, orange, bright_orange, 30, unread, 0)
+			button("Voltar", 100, display_height-100, 80, 30, orange, bright_orange, 30, unread, 0)
 
 		pygame.display.update()
 		clock.tick(15)
@@ -165,10 +177,10 @@ def select_mode():
 
 		#mostra os botoes
 		if selecting:
-			button("Student Mode", display_width/3-200, display_height/2, 240, 50, linen, cornsilk, 30, game_loop, 0)
+			button("Student Mode", display_width/3-200, display_height/2, 240, 50, green, bright_green, 30, game_loop, 0)
 
 		if selecting:
-			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, linen, cornsilk, 30, god_mode, 0)
+			button("Professor Mode", (display_width/3)*2-50, display_height/2, 240, 50, red, bright_red, 30, god_mode, 0)
 
 		if selecting:
 			button("Voltar", 100, display_height-100, 100, 50, orange, bright_orange, 30, unselect, 0)
@@ -183,29 +195,37 @@ def help_screen():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				quit()
+
 		gameDisplay.blit(intro_background, (0, 0))
-		screen_text("Comandos:", 50, 110, 30 ,black )
-		screen_text("A - esquerda", 50, 140, 30 ,black )
-		screen_text("D - direita", 50, 170, 30 ,black )
-		screen_text("UP - disparar", 50, 200, 30 ,black )
-		screen_text("Sistema das ECT's", 50, 270, 30 ,black )
-		screen_text("Deixas a disciplina passar: ", 60, 310, 25 ,black )
-		screen_text("Verde:-2 ECT's ", 70, 340, 20 ,black )
-		screen_text("Azul:-4 ECT's ", 70, 370, 20 ,black )
-		screen_text("Vermelha:+3 ECT's ", 70, 400, 20 ,black )
-		screen_text("Atinges a disciplina: ", 60, 440, 25 ,black )
-		screen_text("Verde:+2 ECT's ", 70, 470, 20 ,black )
-		screen_text("Azul:+10 ECT's ", 70, 500, 20 ,black )
-		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 70, 530, 20 ,black )
+		screen_text("Comandos:", 60, 110, 30 ,black )
+		screen_text("A - esquerda", 60, 140, 30 ,black )
+		screen_text("D - direita", 60, 170, 30 ,black )
+		screen_text("SETAS - disparar", 50, 200, 30 ,black )
+		screen_text("Sistema dos ECT's", 59, 269, 30 ,black )
+		screen_text("Sistema dos ECT's", 60, 270, 30 ,white )
+		screen_text("Deixas a disciplina passar: ", 69, 309, 25 ,black )
+		screen_text("Deixas a disciplina passar: ", 70, 310, 25 ,white )
+		screen_text("Verde:-2 ECT's ", 79, 339, 20 ,black )
+		screen_text("Verde:-2 ECT's ", 80, 340, 20 ,white )
+		screen_text("Azul:-4 ECT's ", 79, 369, 20 ,black )
+		screen_text("Azul:-4 ECT's ", 80, 370, 20 ,white )
+		screen_text("Atinges a disciplina: ", 69, 439, 25 ,black )
+		screen_text("Atinges a disciplina: ", 70, 440, 25 ,white )
+		screen_text("Verde:+2 ECT's ", 79, 469, 20 ,black )
+		screen_text("Verde:+2 ECT's ", 80, 470, 20 ,white )
+		screen_text("Azul:+10 ECT's ", 79, 499, 20 ,black )
+		screen_text("Azul:+10 ECT's ", 80, 500, 20 ,white )
+		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 79, 529, 20 ,black )
+		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 80, 530, 20 ,white )
 		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/12-1, 50, black)
 		screen_text_center("Horario de Duvidas", display_width/2, display_height/12, 50, white)
-		button("Voltar",550,450,200,100,linen,cornsilk,40,game_intro,0)
+		button("Voltar",550,450,150,50,orange,bright_orange,40,game_intro,0)
 
 		pygame.display.update()
 		clock.tick(15)
 
 def deathscreen(new_score, name, old_score):
-	
+	linen
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -268,12 +288,6 @@ def game_loop():
 		#obtem a posicao do aluno
 		for i in aluno:
 			aluno_pos = i.pos()
-
-		if just_dead and pygame.key.get_pressed()[pygame.K_a]:
-			pos_change = -1
-
-		elif just_dead and pygame.key.get_pressed()[pygame.K_d]:
-			pos_change = 1
 
 		#EVENTOS
 		for event in pygame.event.get():
@@ -364,6 +378,9 @@ def game_loop():
 		aluno.draw(gameDisplay)
 		aluno.update(pos_change)
 
+		if just_dead:
+			just_dead = False
+
 		#detecao de colisoes
 		for obstaculo in obstacleGroup:
 
@@ -442,7 +459,7 @@ def game_loop():
 			collide_change = False
 
 		colliding = False
-		just_dead = False
+		#just_dead = False
 
 		#se o jogador perde
 		if GG:
@@ -483,9 +500,11 @@ def game_loop():
 
 
 def crash():
-	global score, GG, ultima_cadeira
+	global score, GG, ultima_cadeira, just_dead
 	screen_text_center(ultima_cadeira + " moeu-te o juizo!", display_width/2, display_height/8+50, 70, black)
 	screen_text_center("ECT'S: " + str(score), display_width/2, display_height/3+40, 40, black)
+
+	just_dead = True
 
 	while GG:
 

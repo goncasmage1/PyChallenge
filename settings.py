@@ -56,11 +56,13 @@ death_sound.stop()
 is_god = False
 intro = True
 selecting = True
+reading = True
 GG = False
 side_shooting = False
 ultima_cadeira = ""
 score = 0
 pause = False
+just_dead = False
 
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1, "IAED":1, "SO":1, "ES":2, "PO":0, "Comp":2}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC", "IAED", "SO", "ES", "PO", "Comp"]
