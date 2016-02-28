@@ -132,34 +132,6 @@ def game_intro():
 		pygame.display.update()
 		clock.tick(15)
 
-
-def help_screen():
-	global reading
-	reading = True
-	while reading:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				quit()
-
-		gameDisplay.blit(intro_background, (0, 0))
-
-		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/8-1, 50, black)
-		screen_text_center("Horario de Duvidas", display_width/2, display_height/8, 50, white)
-
-		screen_text("Comandos:", 20, 130, 28 ,black )
-		screen_text("A - esquerda", 30, 160, 28 ,black )
-		screen_text("D - direita", 30, 190, 28 ,black )
-		screen_text("Setas - disparar", 30, 220, 28 ,black )
-		screen_text("P - pausa", 30, 230, 28 ,black )
-
-		if selecting:
-			button("Voltar", 100, display_height-100, 80, 30, orange, bright_orange, 30, unread, 0)
-
-		pygame.display.update()
-		clock.tick(15)
-	   
-
 def select_mode():
 	global selecting
 	selecting = True
@@ -197,10 +169,16 @@ def help_screen():
 				quit()
 
 		gameDisplay.blit(intro_background, (0, 0))
-		screen_text("Comandos:", 60, 110, 30 ,black )
-		screen_text("A - esquerda", 60, 140, 30 ,black )
-		screen_text("D - direita", 60, 170, 30 ,black )
-		screen_text("SETAS - disparar", 50, 200, 30 ,black )
+		screen_text("Comandos:", 49, 109, 30 ,black )
+		screen_text("Comandos:", 50, 110, 30 ,white )
+		screen_text("A - esquerda", 59, 136, 26 ,black )
+		screen_text("A - esquerda", 60, 137, 26 ,white )
+		screen_text("D - direita", 59, 163, 26 ,black )
+		screen_text("D - direita", 60, 164, 26 ,white )
+		screen_text("SETAS - disparar", 59, 190, 26 ,black )
+		screen_text("SETAS - disparar", 60, 191, 26 ,white )
+		screen_text("P - pausa", 59, 217, 26 ,black )
+		screen_text("P - pausa", 60, 218, 26 ,white )
 		screen_text("Sistema dos ECT's", 59, 269, 30 ,black )
 		screen_text("Sistema dos ECT's", 60, 270, 30 ,white )
 		screen_text("Deixas a disciplina passar: ", 69, 309, 25 ,black )
