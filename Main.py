@@ -23,6 +23,8 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
+	game_sound.unpause()
+
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 
@@ -82,6 +84,7 @@ def paused():
 def game_intro():
 	global intro
 
+	game_sound.play(soundtrack2)
 	while intro:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -168,12 +171,13 @@ def game_loop():
 	shoot_time = 800
 	color_change = black
 	obstacle_speed = 3
-	num_obstacle = 1
 	speed_change = 0.05
 	time_change = 0
 	score_string = ""
 	name_string = ""
-	
+	gasp_sound.set_volume(1)
+	death_sound.set_volume(1)
+
 	aluno = pygame.sprite.GroupSingle(player())
 	user = (aluno.sprites())[0]
 	bullets = []
@@ -181,8 +185,6 @@ def game_loop():
 	obstacleGroup = pygame.sprite.Group()
 	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
 	obstacleGroup.add(cadeira)
-
-	space_occupy = [cadeira[0].occupy()]
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 - time_change, 1500 - time_change))
 
@@ -208,20 +210,17 @@ def game_loop():
 
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
-				for i in range(num_obstacle):
-					cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, space_occupy)]
-					space_occupy += [cadeira[0].occupy()]
-					if len(space_occupy) > 1:
-						space_occupy = ordenar_lista(space_occupy)
-					obstacleGroup.add(cadeira)
-						
+				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
+				obstacleGroup.add(cadeira)					
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
 			if event.type == USEREVENT + 2:
 				shooting = True
 
 			if event.type == USEREVENT + 3:
+				print("lol")
 				color_change = black
+				game_sound.unpause()
 
 			if event.type == pygame.KEYDOWN:
 
@@ -304,6 +303,8 @@ def game_loop():
 					if user.is_dead():
 						user.update_hp(3)
 						ultima_cadeira = obstaculo.nome()
+						game_sound.pause()
+						death_sound.play(death)
 						GG = True
 						break
 
@@ -340,9 +341,6 @@ def game_loop():
 			if obstaculo.pos()[1] > display_height + (obstaculo.height()):
 				obstacle_speed += speed_change
 
-				for i in range(num_obstacle):
-					#ver em que intervalo da lista "space_occupy" esta a posicao do obstaculo e apagar esse intervalo
-
 				if obstaculo.dif() == 0:
 					score += 1
 				elif obstaculo.dif() == 1:
@@ -355,6 +353,9 @@ def game_loop():
 		if colliding and not collide_change:
 			collide_change = True
 			user.update_hp(-1)
+			#game_sound.pause()
+			if user.hp() != 0:
+				gasp_sound.play(gasp)
 			pygame.time.set_timer(USEREVENT + 3, 500)
 			color_change = bright_red
 
@@ -367,7 +368,6 @@ def game_loop():
 
 		#se o jogador perde
 		if GG:
-
 			just_dead = True
 			#verifica se bateu o highscore
 			table = open('highscore.txt','r')
@@ -390,6 +390,8 @@ def game_loop():
 				deathscreen(score, name_string, score_string)
 			else:
 				crash()
+				score_string = ""
+				name_string = ""
 
 		else:
 			screen_text_center("ECT'S: " + str(score) , 700, 20, 20, black)

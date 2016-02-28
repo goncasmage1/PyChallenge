@@ -25,10 +25,30 @@ pygame.init()
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("Trivialidades")
 clock = pygame.time.Clock()
+pygame.mixer.init()
 
 intro_background = pygame.image.load("Imagens/intro_background.png")
 game_background = pygame.image.load("Imagens/game_background.png")
 new_highscore = pygame.image.load("Imagens/new_record.png")
+
+soundtrack = pygame.mixer.Sound("Sounds/soundtrack2.ogg")
+game_sound = pygame.mixer.find_channel()
+game_sound.queue(soundtrack)
+
+soundtrack2 = pygame.mixer.Sound("Sounds/soundtrack2.ogg")
+god_sound = pygame.mixer.find_channel()
+god_sound.queue(soundtrack2)
+
+gasp = pygame.mixer.Sound("Sounds/gasp_sound.ogg")
+gasp_sound = pygame.mixer.find_channel()
+gasp_sound.set_volume(0)
+gasp_sound.queue(gasp)
+
+death = pygame.mixer.Sound("Sounds/death_sound.ogg")
+death_sound = pygame.mixer.find_channel()
+death_sound.set_volume(0)
+death_sound.queue(death)
+
 
 is_god = False
 intro = True
@@ -145,7 +165,6 @@ def random_coor(occupied, width):
 def ordenar_lista(lista):
 	ordena = []
 	for i in lista:
-		print(i)
 		if ordena == []:
 			ordena += [i]
 		else:
@@ -157,5 +176,3 @@ def ordenar_lista(lista):
 					ordena += [i]
 
 	return ordena
-
-

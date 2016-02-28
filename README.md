@@ -1,5 +1,6 @@
-# PyChallenge
+﻿# PyChallenge
 Desafio PyChallenge
+by: GG IST
 
 EXECUTAR:
 

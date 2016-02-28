@@ -4,7 +4,7 @@ import sys
 from settings import *
 
 class obstacle(pygame.sprite.Sprite):
-    def __init__(self, nome, speed, restriction = None):
+    def __init__(self, nome, speed,):
         super().__init__()
         self.w = 40
         self.h = 40
@@ -27,14 +27,7 @@ class obstacle(pygame.sprite.Sprite):
         text_rect = text.get_rect()
         text_rect.center = ((self.w)/2,(self.h)/2)
 
-        if restriction != None:
-            print(restriction)
-            if len(restriction) >= 1:
-                self.x = random_coor(restriction, self.w)
-
-        else:
-            self.x = random.randint(0 + self.w, display_width-self.w)
-
+        self.x = random.randint(0 + self.w, display_width-self.w)
         self.y = 0-self.h + 5
         self.surface = pygame.Surface((self.w, self.h))
         self.surface.fill(self.color)
@@ -51,10 +44,6 @@ class obstacle(pygame.sprite.Sprite):
             return False
         else:
             return True
-
-    def occupy(self):
-        return [self.x, self.x + self.w]
-
 
     def nome(self):
         return self.name
