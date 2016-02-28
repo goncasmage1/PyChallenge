@@ -42,13 +42,21 @@ god_sound = pygame.mixer.find_channel()
 god_sound.queue(soundtrack_2)
 god_sound.stop()
 
+shoot = pygame.mixer.Sound("Sounds/shoot.ogg")
+shoot_sound = pygame.mixer.find_channel()
+shoot_sound.set_volume(0.5)
+shoot_sound.queue(shoot)
+shoot_sound.stop()
+
 gasp = pygame.mixer.Sound("Sounds/gasp_sound.ogg")
 gasp_sound = pygame.mixer.find_channel()
+gasp_sound.set_volume(0.7)
 gasp_sound.queue(gasp)
 gasp_sound.stop()
 
 death = pygame.mixer.Sound("Sounds/death_sound.ogg")
 death_sound = pygame.mixer.find_channel()
+death_sound.set_volume(0.7)
 death_sound.queue(death)
 death_sound.stop()
 

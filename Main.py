@@ -239,6 +239,8 @@ def game_loop():
 	score_string = ""
 	name_string = ""
 
+	shoot_sound.set_volume(0.4)
+
 	if is_god:
 		game_sound.stop()
 		god_sound.play(soundtrack_2)
@@ -305,6 +307,7 @@ def game_loop():
 				if event.key == pygame.K_UP:
 					if not is_god:
 						if shooting:
+							shoot_sound.play(shoot)
 							pygame.time.set_timer(USEREVENT + 2, shoot_time)
 							shooting = False
 							bulletA = [bullet(aluno_pos[0], 2)]
