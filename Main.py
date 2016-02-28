@@ -5,6 +5,7 @@ from obstacle import *
 from power_up import *
 from bullet import *
 from settings import *
+from helper import *
 
 #FUNCOES
 
