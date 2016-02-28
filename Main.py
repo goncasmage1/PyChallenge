@@ -183,7 +183,7 @@ def game_loop():
 
 	if is_god:
 		game_sound.stop()
-		god_sound.play(soundtrack)
+		god_sound.play(soundtrack_2)
 
 	aluno = pygame.sprite.GroupSingle(player())
 	user = (aluno.sprites())[0]
@@ -198,6 +198,12 @@ def game_loop():
 	while True:
 
 		pygame.display.update()
+
+		if not pygame.mixer.get_busy():
+			if is_god:
+				god_sound.play(soundtrack_2)
+			else:
+				game_sound.play(soundtrack)
 
 		#obtem a posicao do aluno
 		for i in aluno:
@@ -227,7 +233,7 @@ def game_loop():
 			if event.type == USEREVENT + 3:
 				color_change = black
 				if is_god:
-					god_sound.pause()
+					god_sound.unpause()
 				else:
 					game_sound.unpause()
 
@@ -354,21 +360,22 @@ def game_loop():
 				obstacle_speed += speed_change
 
 				if obstaculo.dif() == 0:
-					score -= 2
+					if not is_god:
+						score -= 2
 				elif obstaculo.dif() == 1:
-					score -= 4
-				#elif obstaculo.dif() == 2:
-					#score += 3
+					if not is_god:
+						score -= 4
 				obstacleGroup.remove(obstaculo)
 
 		#quando o jogador e atingido por um obstaculo
 		if colliding and not collide_change:
 			collide_change = True
-			user.update_hp(-1)
-			if user.hp() != 0:
-				gasp_sound.play(gasp)
+			if not is_god:
+				user.update_hp(-1)
+				if user.hp() != 0:
+					gasp_sound.play(gasp)
+					color_change = bright_red
 			pygame.time.set_timer(USEREVENT + 3, 500)
-			color_change = bright_red
 
 		#mecanismo de tranca
 		elif not colliding and collide_change:

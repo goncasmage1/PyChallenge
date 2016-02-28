@@ -23,7 +23,7 @@ class obstacle(pygame.sprite.Sprite):
             self.color = red
             self.image = pygame.image.load("Imagens/enemy_2.png")
 
-        font = pygame.font.Font(None, 30 + (self.difficulty)*5)
+        font = pygame.font.Font(None, 30)
         text = font.render(self.name, 0, black)
         text_rect = text.get_rect()
         text_rect.center = ((self.w)/2,(self.h)/2)
