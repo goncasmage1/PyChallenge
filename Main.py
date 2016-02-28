@@ -103,6 +103,8 @@ def game_intro():
 			button("Jogar",display_width/2 - 100,display_height/3,200,100,green,bright_green,40,select_mode,0)
 		if intro:
 			button("Sair",display_width/2 - 100,display_height/3*2,200,100,red,bright_red,40,quitgame,0)
+		if intro:
+			button("Duvidas",display_width/2 - 100,display_height/4*3 - 15 ,200,100,blue,bright_blue,40,help_screen,0)
 
 		table = open('highscore.txt','r')
 		s = table.readline()
