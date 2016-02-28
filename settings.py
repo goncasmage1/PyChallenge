@@ -14,6 +14,7 @@ orange = (255,215,0)
 purple = (255,0,255)
 yellow = (255,255,0)
 cyan = (0,255,255)
+linen = (255,222,173)
 
 bright_red = (255,0,0)
 bright_green = (0,255,0)
