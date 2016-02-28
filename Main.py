@@ -218,7 +218,6 @@ def game_loop():
 				shooting = True
 
 			if event.type == USEREVENT + 3:
-				print("lol")
 				color_change = black
 				game_sound.unpause()
 
@@ -342,11 +341,11 @@ def game_loop():
 				obstacle_speed += speed_change
 
 				if obstaculo.dif() == 0:
-					score += 1
+					score -= 2
 				elif obstaculo.dif() == 1:
-					score += 2
-				elif obstaculo.dif() == 2:
-					score += 3
+					score -= 4
+				#elif obstaculo.dif() == 2:
+					#score += 3
 				obstacleGroup.remove(obstaculo)
 
 		#quando o jogador e atingido por um obstaculo
