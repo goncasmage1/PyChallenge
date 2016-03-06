@@ -12,7 +12,7 @@ from settings import *
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
 	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change,\
-	is_god, just_dead, power_up_change
+	is_god, just_dead, power_up_change, powers
 
 	intro = False
 	selecting = False
@@ -43,6 +43,7 @@ def retry():
 
 	user.reset()
 	obstacleGroup.empty()
+	powers.empty()
 	
 	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 	obstacleGroup.add(cadeira)
@@ -275,7 +276,7 @@ def game_loop():
 
 		#criacao de cronometros
 		if user.score_change() != 1:
-			pygame.time.set_timer(USEREVENT + 5, random.randint(1000-time_change, 1500-time_change))
+			pygame.time.set_timer(USEREVENT + 5, 7000)
 
 		#EVENTOS
 		for event in pygame.event.get():
@@ -288,10 +289,12 @@ def game_loop():
 				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 				obstacleGroup.add(cadeira)
 
-				if power_up_change == 0:
+				if power_up_change <= 0:
+					print("lel")
 					power_up_change = random.randint(5, 9)
-					power = [power_up(random.randint(1, 4), obstacle_speed)]
-					powers.add(power)
+					if not is_god:
+						power = [power_up(random.randint(1, 4), obstacle_speed)]
+						powers.add(power)
 
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000-time_change, 1500-time_change))
 
@@ -421,6 +424,7 @@ def game_loop():
 			#colisao com as balas
 			if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
 				if obstaculo.dif() == 0:
+					print(power_up_change)
 					if is_god:
 						score += 40
 					else:
@@ -431,6 +435,7 @@ def game_loop():
 					time_change += 25
 
 				elif obstaculo.dif() == 1:
+					print(power_up_change)
 					if is_god:
 						score += 80
 					else:
@@ -442,6 +447,7 @@ def game_loop():
 
 				elif obstaculo.dif() == 2:
 					if is_god:
+						power_up_change -= 1
 						score += 150
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					else:
@@ -468,10 +474,12 @@ def game_loop():
 		for power in powers:
 			if pygame.sprite.spritecollideany(power, bulletSprites):
 				pygame.sprite.groupcollide(powers, bulletSprites, True, True)
+				power_up_change = random.randint(5, 9)
 
 			if pygame.sprite.collide_rect(user, power):
 				user.apply(power.type())
 				powers.remove(power)
+				power_up_change = random.randint(5, 9)
 
 				if user.slow_time():
 					for obstaculo in obstacleGroup:
