@@ -273,6 +273,10 @@ def game_loop():
 		for i in aluno:
 			aluno_pos = i.pos()
 
+		#criacao de cronometros
+		if user.score_change() != 1:
+			pygame.time.set_timer(USEREVENT + 5, random.randint(1000-time_change, 1500-time_change))
+
 		#EVENTOS
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -303,11 +307,13 @@ def game_loop():
 
 			if event.type == USEREVENT + 4:
 				user.slow_end()
-				user.score_end()
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
 
-			if event.type == USEREVENT + 4:
+			if event.type == USEREVENT + 5
+				user.score_end()
+
+			if event.type == USEREVENT + 6:
 				side_shooting = False
 
 			if event.type == pygame.KEYDOWN:
@@ -384,7 +390,7 @@ def game_loop():
 		if just_dead:
 			just_dead = False
 
-		#detecao de colisoes
+		#detecao de colisoes (obstaculo)
 		for obstaculo in obstacleGroup:
 
 			if pygame.sprite.collide_rect(user, obstaculo):
@@ -457,6 +463,7 @@ def game_loop():
 						score -= 4
 				obstacleGroup.remove(obstaculo)
 
+		#detecao de colisoes (power_up)
 		for power in powers:
 			if pygame.sprite.spritecollideany(power, bulletSprites):
 				pygame.sprite.groupcollide(powers, bulletSprites, True, True)
@@ -472,7 +479,7 @@ def game_loop():
 
 				if power.type() == 4:
 					side_shooting = True
-					pygame.time.set_timer(USEREVENT + 5, 10000)
+					pygame.time.set_timer(USEREVENT + 6, 10000)
 
 			if power.pos()[1] > display_height + (power.height()):
 
