@@ -12,6 +12,9 @@ class player(pygame.sprite.Sprite):
         self.h = 40
         self.health = 3
         self.speed = 5
+        self.shielded = False
+        self.slow = False
+        self.score = 1
         self.image = pygame.image.load("Imagens/player.png")
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
 
@@ -51,8 +54,36 @@ class player(pygame.sprite.Sprite):
         elif value == 1:
             pass
 
+    def score_change(self):
+        return self.score
+
     def update_hp(self, value):
         self.health += value
+
+    def shield(self):
+        return self.shielded
+
+    def slow_time(self):
+        return self.slow
+
+    def shield_end(self):
+        self.shielded = False
+
+    def slow_end(self):
+        self.slow = False
+
+    def score_end(self):
+        self.score = 1
+
+    def apply(self, value):
+        if value == 1:
+            self.shielded = True
+
+        elif value == 2:
+            self.score = 2
+
+        elif value == 3:
+            self.slow = True
 
     def reset(self):
         self.rect.x = display_width/2

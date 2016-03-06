@@ -29,6 +29,7 @@ pygame.display.set_caption("Trivialidades")
 clock = pygame.time.Clock()
 pygame.mixer.init()
 
+#SONS
 intro_background = pygame.image.load("Imagens/intro_background.png")
 game_background = pygame.image.load("Imagens/game_background.png")
 new_highscore = pygame.image.load("Imagens/new_record.png")
@@ -60,7 +61,7 @@ death_sound.set_volume(0.7)
 death_sound.queue(death)
 death_sound.stop()
 
-
+#VARIAVEIS
 is_god = False
 intro = True
 selecting = True
@@ -74,6 +75,7 @@ just_dead = False
 
 cadeiras_dict = {"CDI I": 2, "AL": 1, "IEI":0, "CDI II":2, "MO":1, "IAC":1, "IAED":1, "SO":1, "ES":2, "PO":0, "Comp":2}
 cadeiras_ref = ["CDI I", "AL", "IEI", "CDI II", "MO", "IAC", "IAED", "SO", "ES", "PO", "Comp"]
+
 
 
 #FUNCOES AUXILIARES

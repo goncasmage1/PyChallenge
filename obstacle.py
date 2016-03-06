@@ -4,12 +4,20 @@ import sys
 from settings import *
 
 class obstacle(pygame.sprite.Sprite):
-    def __init__(self, nome, speed,):
+    def __init__(self, nome, speed, slow):
         super().__init__()
         self.name = nome
+        self.slow = slow
+
+        if self.slow:
+            self.speed = speed/2
+        else:
+            self.speed = speed
+
         for i in cadeiras_dict:
             if self.name == i:
                 self.difficulty = cadeiras_dict[i]
+
         if self.difficulty == 0:
             self.w, self.h = 60, 60
             self.color = green
@@ -33,7 +41,6 @@ class obstacle(pygame.sprite.Sprite):
         self.surface = pygame.Surface((self.w, self.h))
         self.image.blit(text, text_rect)
         self.rect = self.image.get_rect(center = (self.x-self.w/2,self.y-self.h/2))
-        self.speed = speed
 
     def dif(self):
         return self.difficulty
@@ -58,6 +65,9 @@ class obstacle(pygame.sprite.Sprite):
 
     def speed(self):
         return self.speed
+
+    def speed_change(self, value):
+        self.speed = value
 
     def update(self):
         self.rect.y += self.speed

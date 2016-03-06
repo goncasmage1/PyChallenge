@@ -12,7 +12,7 @@ from settings import *
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
 	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change,\
-	is_god, just_dead
+	is_god, just_dead, power_up_change
 
 	intro = False
 	selecting = False
@@ -24,6 +24,7 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
+	power_up_change = random.randint(5, 9)
 
 	if just_dead and pygame.key.get_pressed()[pygame.K_a]:
 		just_dead = False
@@ -43,7 +44,7 @@ def retry():
 	user.reset()
 	obstacleGroup.empty()
 	
-	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
+	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 	obstacleGroup.add(cadeira)
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
@@ -222,7 +223,8 @@ def deathscreen(new_score, name, old_score):
 
 def game_loop():
 	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user,\
-	bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting, obstacle_speed, time_change, pos_change
+	bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting, obstacle_speed, time_change, pos_change,\
+	power_up_change
 
 	intro = False
 	selecting = False
@@ -250,10 +252,12 @@ def game_loop():
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
 	obstacleGroup = pygame.sprite.Group()
-	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
+	powers = pygame.sprite.Group()
+	cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 	obstacleGroup.add(cadeira)
 
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000 - time_change, 1500 - time_change))
+	power_up_change = random.randint(5, 9)
 
 	while True:
 
@@ -277,9 +281,15 @@ def game_loop():
 
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
-				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed)]
-				obstacleGroup.add(cadeira)					
-				pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
+				if power_up_change != 0:
+					cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
+					obstacleGroup.add(cadeira)
+				else:
+					power_up_change = random.randint(5, 9)
+					power = [power_up(random.randint(1, 4), obstacle_speed)]
+					powers.add(power)
+
+				pygame.time.set_timer(USEREVENT + 1, random.randint(1000-time_change, 1500-time_change))
 
 			if event.type == USEREVENT + 2:
 				shooting = True
@@ -290,6 +300,15 @@ def game_loop():
 					god_sound.unpause()
 				else:
 					game_sound.unpause()
+
+			if event.type == USEREVENT + 4:
+				user.slow_end()
+				user.score_end()
+				for obstaculo in obstacleGroup:
+					obstaculo.speed_change(obstaculo.speed*2)
+
+			if event.type == USEREVENT + 4:
+				side_shooting = False
 
 			if event.type == pygame.KEYDOWN:
 
@@ -356,6 +375,9 @@ def game_loop():
 		obstacleGroup.draw(gameDisplay)
 		obstacleGroup.update()
 
+		powers.draw(gameDisplay)
+		powers.update()
+
 		aluno.draw(gameDisplay)
 		aluno.update(pos_change)
 
@@ -372,6 +394,12 @@ def game_loop():
 				if is_god:
 					score += 20
 					obstacleGroup.remove(obstaculo)
+
+				elif user.shield():
+					score += 5 * user.score_change()
+					obstacleGroup.remove(obstaculo)
+					user.shield_end()
+
 				else:
 					if user.is_dead():
 						user.update_hp(3)
@@ -389,8 +417,9 @@ def game_loop():
 					if is_god:
 						score += 40
 					else:
-						score += 2
+						score += 2 * user.score_change()
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+					power_up_change -= 1
 					obstacle_speed += speed_change
 					time_change += 25
 
@@ -398,8 +427,9 @@ def game_loop():
 					if is_god:
 						score += 80
 					else:
-						score += 10
+						score += 10 * user.score_change()
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
+					power_up_change -= 1
 					obstacle_speed += speed_change
 					time_change += 25
 
@@ -408,7 +438,7 @@ def game_loop():
 						score += 150
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					else:
-						score += 10
+						score += 10 * user.score_change()
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
 					obstacle_speed += speed_change
 					time_change += 25
@@ -416,6 +446,8 @@ def game_loop():
 			#quando o jogador ultrapassa um obstaculo
 			if obstaculo.pos()[1] > display_height + (obstaculo.height()):
 				obstacle_speed += speed_change
+				print(power_up_change)
+				power_up_change -= 1
 
 				if obstaculo.dif() == 0:
 					if not is_god:
@@ -424,6 +456,28 @@ def game_loop():
 					if not is_god:
 						score -= 4
 				obstacleGroup.remove(obstaculo)
+
+		for power in powers:
+			if pygame.sprite.spritecollideany(power, bulletSprites):
+				pygame.sprite.groupcollide(powers, bulletSprites, True, True)
+
+			if pygame.sprite.collide_rect(user, power):
+				user.apply(power.type())
+				powers.remove(power)
+
+				if user.slow_time():
+					for obstaculo in obstacleGroup:
+						obstaculo.speed_change(obstaculo.speed/2)
+					pygame.time.set_timer(USEREVENT + 4, 10000)
+
+				if power.type() == 4:
+					side_shooting = True
+					pygame.time.set_timer(USEREVENT + 5, 10000)
+
+			if power.pos()[1] > display_height + (power.height()):
+
+				power_up_change = random.randint(5, 9)
+
 
 		#quando o jogador e atingido por um obstaculo
 		if colliding and not collide_change:
@@ -440,7 +494,6 @@ def game_loop():
 			collide_change = False
 
 		colliding = False
-		#just_dead = False
 
 		#se o jogador perde
 		if GG:
