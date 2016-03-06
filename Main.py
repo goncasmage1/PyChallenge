@@ -285,10 +285,10 @@ def game_loop():
 
 			#evento do cronometro
 			if event.type == USEREVENT + 1:
-				if power_up_change != 0:
-					cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
-					obstacleGroup.add(cadeira)
-				else:
+				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
+				obstacleGroup.add(cadeira)
+
+				if power_up_change == 0:
 					power_up_change = random.randint(5, 9)
 					power = [power_up(random.randint(1, 4), obstacle_speed)]
 					powers.add(power)
@@ -310,7 +310,7 @@ def game_loop():
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
 
-			if event.type == USEREVENT + 5
+			if event.type == USEREVENT + 5:
 				user.score_end()
 
 			if event.type == USEREVENT + 6:
@@ -393,18 +393,18 @@ def game_loop():
 		#detecao de colisoes (obstaculo)
 		for obstaculo in obstacleGroup:
 
+			#colisao com o jogador
 			if pygame.sprite.collide_rect(user, obstaculo):
 				if obstaculo.dif() != 0:
-					colliding = True
+					if user.shield():
+						score += 5 * user.score_change()
+						obstacleGroup.remove(obstaculo)
+					else:
+						colliding = True
 
 				if is_god:
 					score += 20
-					obstacleGroup.remove(obstaculo)
-
-				elif user.shield():
-					score += 5 * user.score_change()
-					obstacleGroup.remove(obstaculo)
-					user.shield_end()
+					obstacleGroup.remove(obstaculo)					
 
 				else:
 					if user.is_dead():
@@ -418,6 +418,7 @@ def game_loop():
 						GG = True
 						break
 
+			#colisao com as balas
 			if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
 				if obstaculo.dif() == 0:
 					if is_god:
@@ -475,14 +476,14 @@ def game_loop():
 				if user.slow_time():
 					for obstaculo in obstacleGroup:
 						obstaculo.speed_change(obstaculo.speed/2)
-					pygame.time.set_timer(USEREVENT + 4, 10000)
+					pygame.time.set_timer(USEREVENT + 4, 5000)
 
 				if power.type() == 4:
 					side_shooting = True
 					pygame.time.set_timer(USEREVENT + 6, 10000)
 
 			if power.pos()[1] > display_height + (power.height()):
-
+				powers.remove(power)
 				power_up_change = random.randint(5, 9)
 
 
@@ -498,6 +499,7 @@ def game_loop():
 
 		#mecanismo de tranca
 		elif not colliding and collide_change:
+			user.shield_end()
 			collide_change = False
 
 		colliding = False
