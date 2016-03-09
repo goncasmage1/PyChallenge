@@ -12,7 +12,7 @@ from settings import *
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
 	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change,\
-	is_god, just_dead, power_up_change, powers
+	is_god, just_dead, power_up_change, powers, event_4, event_6
 
 	intro = False
 	selecting = False
@@ -24,6 +24,8 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
+	event_4 = False
+	event_6 = False
 	power_up_change = random.randint(5, 9)
 
 	if just_dead and pygame.key.get_pressed()[pygame.K_a]:
@@ -185,18 +187,18 @@ def help_screen():
 		screen_text("Sistema dos ECT's", 60, 270, 30 ,white )
 		screen_text("Deixas a disciplina passar: ", 69, 309, 25 ,black )
 		screen_text("Deixas a disciplina passar: ", 70, 310, 25 ,white )
-		screen_text("Verde:-2 ECT's ", 79, 339, 20 ,black )
-		screen_text("Verde:-2 ECT's ", 80, 340, 20 ,white )
-		screen_text("Azul:-4 ECT's ", 79, 369, 20 ,black )
-		screen_text("Azul:-4 ECT's ", 80, 370, 20 ,white )
+		screen_text("Verde: - 2 ECT's ", 79, 339, 20 ,black )
+		screen_text("Verde: - 2 ECT's ", 80, 340, 20 ,white )
+		screen_text("Azul: - 4 ECT's ", 79, 369, 20 ,black )
+		screen_text("Azul: - 4 ECT's ", 80, 370, 20 ,white )
 		screen_text("Atinges a disciplina: ", 69, 439, 25 ,black )
 		screen_text("Atinges a disciplina: ", 70, 440, 25 ,white )
-		screen_text("Verde:+2 ECT's ", 79, 469, 20 ,black )
-		screen_text("Verde:+2 ECT's ", 80, 470, 20 ,white )
-		screen_text("Azul:+10 ECT's ", 79, 499, 20 ,black )
-		screen_text("Azul:+10 ECT's ", 80, 500, 20 ,white )
-		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 79, 529, 20 ,black )
-		screen_text("Vermelha:+10 ECT's (mas e imortal) ", 80, 530, 20 ,white )
+		screen_text("Verde: + 2 ECT's ", 79, 469, 20 ,black )
+		screen_text("Verde: + 2 ECT's ", 80, 470, 20 ,white )
+		screen_text("Azul: + 5 ECT's ", 79, 499, 20 ,black )
+		screen_text("Azul: + 5 ECT's ", 80, 500, 20 ,white )
+		screen_text("Vermelha: + 10 ECT's (mas e imortal) ", 79, 529, 20 ,black )
+		screen_text("Vermelha: + 10 ECT's (mas e imortal) ", 80, 530, 20 ,white )
 		screen_text_center("Horario de Duvidas", display_width/2-2, display_height/12-1, 50, black)
 		screen_text_center("Horario de Duvidas", display_width/2, display_height/12, 50, white)
 		button("Voltar",550,450,150,50,orange,bright_orange,40,game_intro,0)
@@ -225,7 +227,7 @@ def deathscreen(new_score, name, old_score):
 def game_loop():
 	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user,\
 	bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting, obstacle_speed, time_change, pos_change,\
-	power_up_change
+	power_up_change, powers
 
 	intro = False
 	selecting = False
@@ -239,6 +241,8 @@ def game_loop():
 	obstacle_speed = 3
 	speed_change = 0.05
 	time_change = 0
+	event_4 = False
+	event_6 = False
 	score_string = ""
 	name_string = ""
 
@@ -284,15 +288,15 @@ def game_loop():
 				pygame.quit()
 				quit()
 
-			#evento do cronometro
+			#eventos do cronometro
 			if event.type == USEREVENT + 1:
+				print(user.slow_time())
 				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 				obstacleGroup.add(cadeira)
 
-				if power_up_change <= 0:
-					print("lel")
-					power_up_change = random.randint(5, 9)
-					if not is_god:
+				if not is_god:
+					if power_up_change <= 0:
+						power_up_change = random.randint(5, 9)
 						power = [power_up(random.randint(1, 4), obstacle_speed)]
 						powers.add(power)
 
@@ -308,15 +312,18 @@ def game_loop():
 				else:
 					game_sound.unpause()
 
-			if event.type == USEREVENT + 4:
-				user.slow_end()
+			if event.type == USEREVENT + 4 and event_4:
+				user.end_slow()
+				print("lol")
+				event_4 = False
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
 
 			if event.type == USEREVENT + 5:
-				user.score_end()
+				user.end_score()
 
-			if event.type == USEREVENT + 6:
+			if event.type == USEREVENT + 6 and event_6:
+				event_6 = False
 				side_shooting = False
 
 			if event.type == pygame.KEYDOWN:
@@ -373,7 +380,6 @@ def game_loop():
 						bulletSprites.add(bulletA[0])
 
 			if event.type == pygame.KEYUP:
-					
 				if event.key == pygame.K_a:
 					pos_change += 1
 				elif event.key == pygame.K_d:
@@ -402,6 +408,7 @@ def game_loop():
 					if user.shield():
 						score += 5 * user.score_change()
 						obstacleGroup.remove(obstaculo)
+						user.end_shield()
 					else:
 						colliding = True
 
@@ -424,25 +431,25 @@ def game_loop():
 			#colisao com as balas
 			if pygame.sprite.spritecollideany(obstaculo, bulletSprites):
 				if obstaculo.dif() == 0:
-					print(power_up_change)
 					if is_god:
 						score += 40
 					else:
 						score += 2 * user.score_change()
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					power_up_change -= 1
-					obstacle_speed += speed_change
+					if obstacle_speed <= 4.5:
+						obstacle_speed += speed_change
 					time_change += 25
 
 				elif obstaculo.dif() == 1:
-					print(power_up_change)
 					if is_god:
 						score += 80
 					else:
-						score += 10 * user.score_change()
+						score += 5 * user.score_change()
 					pygame.sprite.groupcollide(obstacleGroup, bulletSprites, True, True)
 					power_up_change -= 1
-					obstacle_speed += speed_change
+					if obstacle_speed <= 4.5:
+						obstacle_speed += speed_change
 					time_change += 25
 
 				elif obstaculo.dif() == 2:
@@ -453,13 +460,14 @@ def game_loop():
 					else:
 						score += 10 * user.score_change()
 						pygame.sprite.groupcollide(obstacleGroup, bulletSprites, False, True)
-					obstacle_speed += speed_change
+					if obstacle_speed <= 4.5:
+						obstacle_speed += speed_change
 					time_change += 25
 
 			#quando o jogador ultrapassa um obstaculo
 			if obstaculo.pos()[1] > display_height + (obstaculo.height()):
-				obstacle_speed += speed_change
-				print(power_up_change)
+				if obstacle_speed <= 4.5:
+						obstacle_speed += speed_change
 				power_up_change -= 1
 
 				if obstaculo.dif() == 0:
@@ -481,12 +489,14 @@ def game_loop():
 				powers.remove(power)
 				power_up_change = random.randint(5, 9)
 
-				if user.slow_time():
+				if user.slow_time() and not event_4:
+					event_4 = True
 					for obstaculo in obstacleGroup:
 						obstaculo.speed_change(obstaculo.speed/2)
 					pygame.time.set_timer(USEREVENT + 4, 5000)
 
-				if power.type() == 4:
+				if power.type() == 4 and not event_6:
+					event_6 = True
 					side_shooting = True
 					pygame.time.set_timer(USEREVENT + 6, 10000)
 
@@ -507,7 +517,7 @@ def game_loop():
 
 		#mecanismo de tranca
 		elif not colliding and collide_change:
-			user.shield_end()
+			user.end_shield()
 			collide_change = False
 
 		colliding = False

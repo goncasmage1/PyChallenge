@@ -66,13 +66,13 @@ class player(pygame.sprite.Sprite):
     def slow_time(self):
         return self.slow
 
-    def shield_end(self):
+    def end_shield(self):
         self.shielded = False
 
-    def slow_end(self):
+    def end_slow(self):
         self.slow = False
 
-    def score_end(self):
+    def end_score(self):
         self.score = 1
 
     def apply(self, value):

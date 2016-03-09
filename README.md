@@ -1,6 +1,7 @@
-﻿# PyChallenge
-Desafio PyChallenge
-by: GG IST
+﻿# Trivialidades
+
+Jogo para competiçao PyChallenge
+by: GG IST aka Gonçalo Marques e Francisco Aguiar
 
 EXECUTAR:
 
