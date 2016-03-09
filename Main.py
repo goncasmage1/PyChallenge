@@ -12,7 +12,7 @@ from settings import *
 def retry():
 	global intro, selecting, colliding, collide_change, GG, score, obstacle_speed,\
 	time_change, bullets, bulletSprites, aluno, obstacleGroup, cadeira, pause, pos_change,\
-	is_god, just_dead, power_up_change, powers, event_4, event_6
+	is_god, just_dead, power_up_change, powers
 
 	intro = False
 	selecting = False
@@ -24,8 +24,6 @@ def retry():
 	pos_change = 0
 	obstacle_speed = 3
 	time_change = 0
-	event_4 = False
-	event_6 = False
 	power_up_change = random.randint(5, 9)
 
 	if just_dead and pygame.key.get_pressed()[pygame.K_a]:
@@ -42,6 +40,9 @@ def retry():
 		game_sound.unpause()
 	bullets = []
 	bulletSprites =pygame.sprite.Group()
+
+	user.end_slow()
+	user.end_score()
 
 	user.reset()
 	obstacleGroup.empty()
@@ -241,8 +242,6 @@ def game_loop():
 	obstacle_speed = 3
 	speed_change = 0.05
 	time_change = 0
-	event_4 = False
-	event_6 = False
 	score_string = ""
 	name_string = ""
 
@@ -265,7 +264,6 @@ def game_loop():
 	power_up_change = random.randint(5, 9)
 
 	while True:
-
 		pygame.display.update()
 
 		if not pygame.mixer.get_busy():
@@ -311,16 +309,15 @@ def game_loop():
 				else:
 					game_sound.unpause()
 
-			if event.type == USEREVENT + 4 and event_4:
+			if event.type == USEREVENT + 4:
 				user.end_slow()
-				event_4 = False
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
 
 			if event.type == USEREVENT + 5:
 				user.end_score()
 
-			if event.type == USEREVENT + 6 and event_6:
+			if event.type == USEREVENT + 6:
 				event_6 = False
 				side_shooting = False
 
@@ -354,6 +351,7 @@ def game_loop():
 				if event.key == pygame.K_LEFT and side_shooting:
 					if not is_god:
 						if shooting:
+							shoot_sound.play(shoot)
 							pygame.time.set_timer(USEREVENT + 2, shoot_time)
 							shooting = False
 							bulletA = [bullet(aluno_pos[0], 1)]
@@ -367,6 +365,7 @@ def game_loop():
 				if event.key == pygame.K_RIGHT and side_shooting:
 					if not is_god:
 						if shooting:
+							shoot_sound.play(shoot)
 							pygame.time.set_timer(USEREVENT + 2, shoot_time)
 							shooting = False
 							bulletA = [bullet(aluno_pos[0], 3)]
@@ -482,25 +481,25 @@ def game_loop():
 				pygame.sprite.groupcollide(powers, bulletSprites, True, True)
 				power_up_change = random.randint(5, 9)
 
-			if pygame.sprite.collide_rect(user, power):
-				user.apply(power.type())
+			if power.pos()[1] > display_height + (power.height()):
 				powers.remove(power)
 				power_up_change = random.randint(5, 9)
 
-				if user.slow_time() and not event_4:
-					event_4 = True
+			if pygame.sprite.collide_rect(user, power):
+				user.apply(power.type())
+				power_up_change = random.randint(5, 9)
+
+				if user.slow_time():
+					print("lol")
 					for obstaculo in obstacleGroup:
 						obstaculo.speed_change(obstaculo.speed/2)
 					pygame.time.set_timer(USEREVENT + 4, 5000)
 
-				if power.type() == 4 and not event_6:
-					event_6 = True
+				if power.type() == 4:
 					side_shooting = True
 					pygame.time.set_timer(USEREVENT + 6, 10000)
 
-			if power.pos()[1] > display_height + (power.height()):
 				powers.remove(power)
-				power_up_change = random.randint(5, 9)
 
 
 		#quando o jogador e atingido por um obstaculo
