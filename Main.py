@@ -290,7 +290,6 @@ def game_loop():
 
 			#eventos do cronometro
 			if event.type == USEREVENT + 1:
-				print(user.slow_time())
 				cadeira = [obstacle(random.choice(cadeiras_ref), obstacle_speed, user.slow_time())]
 				obstacleGroup.add(cadeira)
 
@@ -314,7 +313,6 @@ def game_loop():
 
 			if event.type == USEREVENT + 4 and event_4:
 				user.end_slow()
-				print("lol")
 				event_4 = False
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
@@ -405,7 +403,7 @@ def game_loop():
 			#colisao com o jogador
 			if pygame.sprite.collide_rect(user, obstaculo):
 				if obstaculo.dif() != 0:
-					if user.shield():
+					if user.shield() >= 1:
 						score += 5 * user.score_change()
 						obstacleGroup.remove(obstaculo)
 						user.end_shield()
@@ -517,7 +515,6 @@ def game_loop():
 
 		#mecanismo de tranca
 		elif not colliding and collide_change:
-			user.end_shield()
 			collide_change = False
 
 		colliding = False
@@ -552,6 +549,7 @@ def game_loop():
 		else:
 			screen_text_center("ECT'S: " + str(score) , 700, 20, 20, black)
 			screen_text_center("Paciencia: " +str(user.hp()) , 100, 20, 20, color_change)
+			#power_up_display()
 
 		#update
 		bulletSprites.update()

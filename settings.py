@@ -1,5 +1,7 @@
 import pygame, pygame.event, time, random, sys
 from pygame.locals import *
+#from player import *
+#from Main import *
 
 #ATRIBUICAO DE VALORES
 display_width = 800
@@ -165,6 +167,11 @@ def ask(screen):
 			current_string.append(chr(inkey))
 		display_box(screen, "".join(current_string))
 	return "".join(current_string)
+
+
+#def power_up_display():
+#    if user.shield():
+#        gameDisplay.blit()
 
 
 def random_coor(occupied, width):

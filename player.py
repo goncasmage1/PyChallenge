@@ -12,7 +12,7 @@ class player(pygame.sprite.Sprite):
         self.h = 40
         self.health = 3
         self.speed = 5
-        self.shielded = False
+        self.shielded = 0
         self.slow = False
         self.score = 1
         self.image = pygame.image.load("Imagens/player.png")
@@ -67,7 +67,7 @@ class player(pygame.sprite.Sprite):
         return self.slow
 
     def end_shield(self):
-        self.shielded = False
+        self.shielded -= 1
 
     def end_slow(self):
         self.slow = False
@@ -77,7 +77,7 @@ class player(pygame.sprite.Sprite):
 
     def apply(self, value):
         if value == 1:
-            self.shielded = True
+            self.shielded += 1
 
         elif value == 2:
             self.score = 2
