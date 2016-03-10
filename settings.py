@@ -169,11 +169,6 @@ def ask(screen):
 	return "".join(current_string)
 
 
-#def power_up_display():
-#    if user.shield():
-#        gameDisplay.blit()
-
-
 def random_coor(occupied, width):
 	previous = 0 + width*2
 	random_list = []

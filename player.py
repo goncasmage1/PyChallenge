@@ -10,6 +10,7 @@ class player(pygame.sprite.Sprite):
         self.y = display_height - 40
         self.w = 40
         self.h = 40
+        self.contador = 0
         self.health = 3
         self.speed = 5
         self.shielded = 0
@@ -68,6 +69,10 @@ class player(pygame.sprite.Sprite):
 
     def end_shield(self):
         self.shielded -= 1
+        if self.contador != 0:
+            self.contador -= 1
+        else:
+            self.speed += 1
 
     def end_slow(self):
         self.slow = False
@@ -78,6 +83,10 @@ class player(pygame.sprite.Sprite):
     def apply(self, value):
         if value == 1:
             self.shielded += 1
+            if self.speed >= 3:
+                self.speed -= 1
+            else:
+                self.contador += 1
 
         elif value == 2:
             self.score = 2

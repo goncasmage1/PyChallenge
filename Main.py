@@ -54,7 +54,6 @@ def retry():
 	pygame.time.set_timer(USEREVENT + 1, random.randint(1000, 1500))
 
 
-
 #comeca o jogo em god mode
 def god_mode():
 	global is_god, side_shooting
@@ -225,6 +224,18 @@ def deathscreen(new_score, name, old_score):
 	pygame.display.update()
 	clock.tick(15)
 
+def power_up_display():
+	if user.shield() > 0:
+		for i in range(user.shield()):
+			gameDisplay.blit(pygame.image.load("Imagens/shield_small.png"), (30, 40+25*i))
+	if user.slow_time():
+		gameDisplay.blit(pygame.image.load("Imagens/slow_small.png"), (60, 40))
+	if side_shooting:
+		gameDisplay.blit(pygame.image.load("Imagens/ammo_small.png"), (90, 40))
+	if user.score_change() > 1:
+		for j in range(score_change() - 1):
+			gameDisplay.blit(pygame.image.load("Imagens/double_small.png"), (120, 40+25*j))
+
 def game_loop():
 	global is_god, intro, selecting, GG, side_shooting, score, intro, ultima_cadeira, aluno, user,\
 	bullets, bulletSprites, obstacleGroup, cadeira, pause, shooting, obstacle_speed, time_change, pos_change,\
@@ -300,9 +311,11 @@ def game_loop():
 				pygame.time.set_timer(USEREVENT + 1, random.randint(1000-time_change, 1500-time_change))
 
 			if event.type == USEREVENT + 2:
+				pygame.time.set_timer(USEREVENT + 2, 0)
 				shooting = True
 
 			if event.type == USEREVENT + 3:
+				pygame.time.set_timer(USEREVENT + 3, 0)
 				color_change = black
 				if is_god:
 					god_sound.unpause()
@@ -310,14 +323,17 @@ def game_loop():
 					game_sound.unpause()
 
 			if event.type == USEREVENT + 4:
+				pygame.time.set_timer(USEREVENT + 4, 0)
 				user.end_slow()
 				for obstaculo in obstacleGroup:
 					obstaculo.speed_change(obstaculo.speed*2)
 
 			if event.type == USEREVENT + 5:
+				pygame.time.set_timer(USEREVENT + 5, 0)
 				user.end_score()
 
 			if event.type == USEREVENT + 6:
+				pygame.time.set_timer(USEREVENT + 6, 0)
 				event_6 = False
 				side_shooting = False
 
@@ -490,7 +506,6 @@ def game_loop():
 				power_up_change = random.randint(5, 9)
 
 				if user.slow_time():
-					print("lol")
 					for obstaculo in obstacleGroup:
 						obstaculo.speed_change(obstaculo.speed/2)
 					pygame.time.set_timer(USEREVENT + 4, 5000)
@@ -547,8 +562,9 @@ def game_loop():
 
 		else:
 			screen_text_center("ECT'S: " + str(score) , 700, 20, 20, black)
+			screen_text_center("Paciencia: " +str(user.hp()) , 99, 19, 20, white)
 			screen_text_center("Paciencia: " +str(user.hp()) , 100, 20, 20, color_change)
-			#power_up_display()
+			power_up_display()
 
 		#update
 		bulletSprites.update()
