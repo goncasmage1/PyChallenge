@@ -214,7 +214,7 @@ def deathscreen(new_score, name, old_score):
 			quit()
 
 	gameDisplay.blit(new_highscore, (0, 0))
-	screen_text_center("Bateste o recorde do " + name + " de " + old_score + " ECT'S!", display_width/2, display_height/4, 35, black)
+	screen_text_center("Bateste o recorde de " + name + " de " + old_score + " ECT'S!", display_width/2, display_height/4, 35, black)
 	screen_text_center("Introduz o teu nome:", display_width/2, display_height/4 + 80, 25, black)
 	nome = ask(gameDisplay)
 	escreve = open('highscore.txt','w')
@@ -233,7 +233,7 @@ def power_up_display():
 	if side_shooting:
 		gameDisplay.blit(pygame.image.load("Imagens/ammo_small.png"), (90, 40))
 	if user.score_change() > 1:
-		for j in range(score_change() - 1):
+		for j in range(user.score_change() - 1):
 			gameDisplay.blit(pygame.image.load("Imagens/double_small.png"), (120, 40+25*j))
 
 def game_loop():

@@ -96,6 +96,9 @@ class player(pygame.sprite.Sprite):
 
     def reset(self):
         self.rect.x = display_width/2
+        self.shielded = 0
+        self.slow = False
+        self.score = 1
 
     def hp(self):
         return self.health
